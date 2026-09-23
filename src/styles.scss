@@ -1,0 +1,123 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Sapumal Theatre — Patron Web App global styles
+   Shares the brand palette with the admin portal.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: light;
+
+  --brand-maroon: #5a0f18;         /* Deep Burgundy — primary/nav/buttons */
+  --brand-maroon-dark: #2b080d;    /* Dark Burgundy */
+  --brand-maroon-2: #7a1b28;
+  --brand-gold: #d4a72c;           /* Gold — logo, highlights, CTAs */
+  --brand-maroon-soft: #f5e8ea;
+  --brand-gold-soft: #fbf3d5;
+
+  /* Header / footer */
+  --header-bg: #ffffff;
+  --header-text: #222222;
+  --footer-bg: #faf7f0;
+
+  /* App surfaces */
+  --brand-bg: #faf7f0;             /* Warm Ivory — main background */
+  --brand-surface: #ffffff;        /* White — cards */
+  --brand-surface-2: #faf7f0;
+  --brand-text: #222222;           /* Charcoal — main text */
+  --brand-text-soft: #3a3a3a;
+  --brand-muted: #6b6b6b;          /* Muted Grey — secondary text */
+  --brand-border: #e5ded6;         /* Border */
+
+  /* Status */
+  --brand-success: #2e7d32;
+  --brand-success-bg: #e7f2e8;
+  --brand-warning: #b7791f;
+  --brand-warning-bg: var(--brand-gold-soft);
+  --brand-danger: #b42318;
+  --brand-danger-bg: #fbeae8;
+  --brand-info: #2f5fa8;
+  --brand-info-bg: #e8eef7;
+
+  --shadow-card: 0 1px 2px rgba(40, 20, 25, 0.05), 0 1px 3px rgba(40, 20, 25, 0.04);
+}
+
+/* ── Base element styles ─────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', system-ui, sans-serif;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── Reusable helpers ────────────────────────────────────────────────────── */
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.muted {
+  color: var(--brand-muted);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+
+/* Status pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.pill--success { background: var(--brand-success-bg); color: var(--brand-success); }
+.pill--warning { background: var(--brand-warning-bg); color: var(--brand-warning); }
+.pill--danger  { background: var(--brand-danger-bg);  color: var(--brand-danger); }
+.pill--info    { background: var(--brand-info-bg);    color: var(--brand-info); }
+.pill--muted   { background: var(--brand-surface-2);  color: var(--brand-muted); }
+
+/* Language chips (Sinhala / Tamil / English) */
+.lang-chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  background: var(--brand-surface-2);
+  color: var(--brand-maroon-2);
+}
+
+/* ── Print: hide app chrome so only page content (e.g. a ticket) prints ───── */
+@media print {
+  app-header,
+  app-footer {
+    display: none !important;
+  }
+}

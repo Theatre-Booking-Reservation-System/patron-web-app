@@ -1,0 +1,13 @@
+@if (error(); as e) {
+  <div class="overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()" role="alertdialog" aria-modal="true">
+      <div class="modal__icon"><mat-icon>error_outline</mat-icon></div>
+      <h2 class="modal__title">{{ e.title }}</h2>
+      <p class="modal__message">{{ e.message }}</p>
+      @if (e.code) {
+        <span class="modal__code">Code: {{ e.code }}</span>
+      }
+      <button class="modal__btn" (click)="close()">Dismiss</button>
+    </div>
+  </div>
+}

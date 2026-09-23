@@ -1,0 +1,83 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 4, 7, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+  padding: 1rem;
+  animation: fade 0.15s ease;
+}
+
+.modal {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  width: min(400px, 100%);
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  animation: pop 0.15s ease;
+}
+
+.modal__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--brand-danger-bg);
+  color: var(--brand-danger);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1rem;
+}
+.modal__icon mat-icon {
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+}
+
+.modal__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--brand-text);
+}
+.modal__message {
+  font-size: 0.9rem;
+  color: var(--brand-text-soft);
+  margin: 0 0 1rem;
+}
+.modal__code {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: var(--brand-muted);
+  background: var(--brand-surface-2);
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.modal__btn {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: var(--brand-maroon);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal__btn:hover {
+  background: var(--brand-maroon-dark);
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
