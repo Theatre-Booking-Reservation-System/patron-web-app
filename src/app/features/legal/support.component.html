@@ -1,0 +1,39 @@
+<app-header />
+
+<main class="support">
+  <header class="ph">
+    <div class="ph__inner">
+      <h1 class="ph__title">{{ 'legal.supportTitle' | translate }}</h1>
+      <p class="ph__lead">{{ 'support.lead' | translate }}</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <h2 class="section-heading">{{ 'support.faqTitle' | translate }}</h2>
+    <div class="faq">
+      @for (item of faqs; track item.q; let i = $index) {
+        <div class="faq__item" [class.faq__item--open]="openFaq() === i">
+          <button class="faq__q" (click)="toggleFaq(i)" [attr.aria-expanded]="openFaq() === i">
+            <span>{{ item.q | translate }}</span>
+            <mat-icon>{{ openFaq() === i ? 'remove' : 'add' }}</mat-icon>
+          </button>
+          @if (openFaq() === i) {
+            <p class="faq__a">{{ item.a | translate }}</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Still need help card -->
+    <div class="help">
+      <span class="help__icon"><mat-icon>support_agent</mat-icon></span>
+      <div class="help__body">
+        <h3 class="help__title">{{ 'support.contactTitle' | translate }}</h3>
+        <p class="help__text">{{ 'support.contactText' | translate }}</p>
+      </div>
+      <a class="help__btn" routerLink="/contact">{{ 'nav.contact' | translate }}</a>
+    </div>
+  </div>
+</main>
+
+<app-footer />

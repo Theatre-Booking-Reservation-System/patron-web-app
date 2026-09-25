@@ -1,0 +1,37 @@
+<app-header />
+
+<main class="conf">
+  @if (booking.draft().production; as p) {
+    <section class="conf__banner">
+      <span class="conf__check"><mat-icon>check</mat-icon></span>
+      <h1 class="conf__title">{{ 'ticket.confirmedTitle' | translate }}</h1>
+      <p class="conf__text">{{ 'ticket.confirmedText' | translate }}</p>
+    </section>
+
+    <div class="conf__card card">
+      <div class="conf__details">
+        <h2 class="conf__prod">{{ p.name }}</h2>
+        <div class="conf__row"><span>{{ 'ticket.bookingId' | translate }}</span><strong class="mono">{{ bookingId }}</strong></div>
+        <div class="conf__row"><span>{{ 'ticket.dateTime' | translate }}</span><strong>{{ booking.draft().performance?.date }}, {{ booking.draft().performance?.clockLabel }}</strong></div>
+        <div class="conf__row"><span>{{ 'ticket.venue' | translate }}</span><strong>{{ p.venue }}</strong></div>
+        <div class="conf__row"><span>{{ 'ticket.seats' | translate }}</span><strong>{{ seatLabels }}</strong></div>
+        <div class="conf__row"><span>{{ 'ticket.totalPaid' | translate }}</span><strong class="conf__paid">LKR {{ booking.total().toLocaleString() }}</strong></div>
+      </div>
+
+      <div class="conf__qr">
+        <div class="conf__qr-box"><app-qr-code [value]="bookingId" /></div>
+        <p class="conf__qr-hint">{{ 'ticket.present' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="conf__actions">
+      <a class="btn btn--solid" routerLink="/ticket"><mat-icon>confirmation_number</mat-icon> {{ 'ticket.eticket' | translate }}</a>
+      <a class="btn btn--link" routerLink="/my-bookings">{{ 'ticket.viewBookings' | translate }}</a>
+    </div>
+  } @else {
+    <p class="muted conf__missing">{{ 'prod.empty' | translate }}</p>
+    <a class="btn btn--solid" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  }
+</main>
+
+<app-footer />

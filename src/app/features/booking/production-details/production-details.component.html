@@ -1,0 +1,111 @@
+<app-header />
+
+@if (production(); as p) {
+  <main class="pd">
+    <!-- Breadcrumb -->
+    <nav class="crumbs">
+      <a routerLink="/">{{ 'nav.home' | translate }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <a routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ p.name }}</span>
+    </nav>
+
+    <div class="hero">
+      <!-- Poster -->
+      <div class="hero__poster">
+        <img [src]="p.image" [alt]="p.name" />
+      </div>
+
+      <!-- Summary -->
+      <div class="hero__info">
+        <span class="hero__genre lang-chip">{{ p.genreKey | translate }}</span>
+        <h1 class="hero__title">{{ p.name }}</h1>
+
+        <div class="hero__meta">
+          <span><mat-icon>event</mat-icon> {{ p.dateRange }}</span>
+          <span><mat-icon>place</mat-icon> {{ p.venue }}</span>
+          <span><mat-icon>schedule</mat-icon> {{ p.durationLabel }}</span>
+          <span><mat-icon>person</mat-icon> {{ p.ageLabel }}</span>
+        </div>
+
+        <div class="hero__rating">
+          <span class="stars">
+            @for (s of stars; track s) {
+              <mat-icon>{{ s <= p.rating ? 'star' : (s - 0.5 <= p.rating ? 'star_half' : 'star_border') }}</mat-icon>
+            }
+          </span>
+          <span class="hero__rating-num">{{ p.rating }} ({{ p.reviews }} {{ 'pd.reviews' | translate }})</span>
+        </div>
+
+        <button class="hero__cta" (click)="bookTickets()">
+          <mat-icon>confirmation_number</mat-icon> {{ 'action.bookTickets' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs + show dates -->
+    <div class="body">
+      <div class="body__main">
+        <div class="tabs">
+          <button [class.tabs__btn--active]="tab() === 'about'" class="tabs__btn" (click)="setTab('about')">
+            {{ 'pd.about' | translate }}
+          </button>
+          <button [class.tabs__btn--active]="tab() === 'cast'" class="tabs__btn" (click)="setTab('cast')">
+            {{ 'pd.cast' | translate }}
+          </button>
+          <button [class.tabs__btn--active]="tab() === 'reviews'" class="tabs__btn" (click)="setTab('reviews')">
+            {{ 'pd.reviews' | translate }}
+          </button>
+        </div>
+
+        <div class="tab-body">
+          @switch (tab()) {
+            @case ('about') {
+              <p class="synopsis">{{ p.synopsis }}</p>
+              <div class="facts">
+                <div><span>{{ 'pd.duration' | translate }}</span><strong>{{ p.durationLabel }}</strong></div>
+                <div><span>{{ 'pd.age' | translate }}</span><strong>{{ p.ageLabel }}</strong></div>
+                <div><span>{{ 'pd.venue' | translate }}</span><strong>{{ p.venue }}</strong></div>
+              </div>
+            }
+            @case ('cast') {
+              <ul class="cast">
+                @for (c of cast; track c.name) {
+                  <li>
+                    <span class="cast__avatar">{{ c.name.charAt(0) }}</span>
+                    <span class="cast__info"><strong>{{ c.name }}</strong><small>{{ c.role }}</small></span>
+                  </li>
+                }
+              </ul>
+            }
+            @case ('reviews') {
+              <p class="synopsis">{{ p.rating }} / 5 — {{ p.reviews }} {{ 'pd.reviews' | translate }}.</p>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Show dates card -->
+      <aside class="dates card">
+        <h3 class="dates__title">{{ 'pd.showDates' | translate }}</h3>
+        <ul class="dates__list">
+          @for (d of showDates; track d.date) {
+            <li>
+              <span>{{ d.date }}</span>
+              <strong>{{ d.time }}</strong>
+            </li>
+          }
+        </ul>
+        <button class="dates__cta" (click)="bookTickets()">{{ 'action.bookTickets' | translate }}</button>
+      </aside>
+    </div>
+  </main>
+} @else {
+  <main class="pd pd--missing">
+    <p class="muted">{{ 'prod.empty' | translate }}</p>
+    <a class="hero__cta" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  </main>
+}
+
+<app-footer />

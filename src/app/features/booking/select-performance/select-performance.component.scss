@@ -1,0 +1,252 @@
+:host {
+  display: block;
+}
+
+.perf {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 0;
+}
+.perf__missing {
+  text-align: center;
+  padding: 3rem 0 1rem;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--brand-muted);
+  margin-bottom: 1.25rem;
+}
+.crumbs a:hover {
+  color: var(--brand-maroon);
+}
+.crumbs mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.perf__title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--brand-text);
+  margin: 0 0 1.5rem;
+}
+
+.perf__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Calendar */
+.cal__title,
+.shows__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--brand-text);
+  margin: 0 0 0.75rem;
+}
+.cal__month {
+  font-weight: 600;
+  color: var(--brand-maroon);
+  margin-bottom: 0.75rem;
+}
+.cal__weekdays,
+.cal__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+.cal__weekdays {
+  margin-bottom: 0.35rem;
+}
+.cal__weekdays span {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--brand-muted);
+}
+.cal__pad {
+  aspect-ratio: 1;
+}
+.cal__day {
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--brand-surface-2);
+  color: var(--brand-text-soft);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.cal__day:disabled {
+  color: var(--brand-muted);
+  opacity: 0.5;
+  cursor: default;
+}
+.cal__day--shows {
+  border-color: var(--brand-maroon-soft);
+  background: var(--brand-maroon-soft);
+  color: var(--brand-maroon);
+  font-weight: 700;
+  opacity: 1;
+}
+.cal__day--shows:hover {
+  background: var(--brand-maroon);
+  color: #fff;
+}
+.cal__day--active {
+  background: var(--brand-maroon);
+  color: #fff;
+}
+.cal__day--poya {
+  position: relative;
+}
+.cal__day--poya::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-gold);
+}
+.cal__note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--brand-muted);
+  margin: 1rem 0 0;
+}
+.cal__note mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--brand-gold);
+}
+
+/* Shows */
+.shows__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.show {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  background: var(--brand-surface);
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.show:hover {
+  border-color: var(--brand-maroon);
+}
+.show--active {
+  border-color: var(--brand-maroon);
+  background: var(--brand-maroon-soft);
+}
+.show__time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--brand-text);
+}
+.show__time mat-icon {
+  color: var(--brand-maroon);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+.show__time small {
+  font-weight: 400;
+  color: var(--brand-muted);
+  font-size: 0.78rem;
+}
+.show__avail {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+.show__avail--available {
+  background: var(--brand-success-bg);
+  color: var(--brand-success);
+}
+.show__avail--limited {
+  background: var(--brand-warning-bg);
+  color: var(--brand-warning);
+}
+.show__avail--popular {
+  background: var(--brand-info-bg);
+  color: var(--brand-info);
+}
+.shows__empty {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+/* Footer nav */
+.perf__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.75rem 0 1rem;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.btn--solid {
+  background: var(--brand-maroon);
+  color: #fff;
+}
+.btn--solid:hover {
+  background: var(--brand-maroon-dark);
+}
+.btn--solid:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btn--ghost {
+  border-color: var(--brand-border);
+  background: var(--brand-surface);
+  color: var(--brand-text);
+}
+.btn--ghost:hover {
+  border-color: var(--brand-maroon);
+  color: var(--brand-maroon);
+}
+
+@media (max-width: 760px) {
+  .perf__grid {
+    grid-template-columns: 1fr;
+  }
+}

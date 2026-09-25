@@ -21,10 +21,6 @@
 
     <!-- Actions -->
     <div class="header__actions">
-      <button class="header__icon-btn" [attr.aria-label]="'nav.search' | translate">
-        <mat-icon>search</mat-icon>
-      </button>
-
       <button
         class="header__icon-btn"
         (click)="toggleTheme()"
@@ -68,12 +64,43 @@
         }
       </div>
 
-      <a class="header__btn header__btn--ghost" routerLink="/login">
-        {{ 'action.login' | translate }}
-      </a>
-      <a class="header__btn header__btn--solid" routerLink="/register">
-        {{ 'action.signup' | translate }}
-      </a>
+      @if (isAuthenticated()) {
+        <!-- User menu (signed in) -->
+        <div class="header__user">
+          <button class="header__avatar" (click)="toggleUser()" [attr.aria-expanded]="userOpen()">
+            <span class="header__avatar-initials">{{ initials }}</span>
+            <mat-icon class="header__lang-caret">expand_more</mat-icon>
+          </button>
+
+          @if (userOpen()) {
+            <div class="header__user-menu">
+              <div class="header__user-head">
+                <span class="header__avatar-initials header__avatar-initials--lg">{{ initials }}</span>
+                <div>
+                  <strong>{{ user()?.name }}</strong>
+                  <small>{{ user()?.email }}</small>
+                </div>
+              </div>
+              <a routerLink="/my-bookings" (click)="userOpen.set(false)">
+                <mat-icon>confirmation_number</mat-icon> {{ 'account.myBookings' | translate }}
+              </a>
+              <a routerLink="/profile" (click)="userOpen.set(false)">
+                <mat-icon>person</mat-icon> {{ 'account.profile' | translate }}
+              </a>
+              <button class="header__logout" (click)="logout()">
+                <mat-icon>logout</mat-icon> {{ 'account.logout' | translate }}
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <a class="header__btn header__btn--ghost" routerLink="/login">
+          {{ 'action.login' | translate }}
+        </a>
+        <a class="header__btn header__btn--solid" routerLink="/register">
+          {{ 'action.signup' | translate }}
+        </a>
+      }
 
       <button class="header__icon-btn header__burger" (click)="toggleMenu()" aria-label="Menu">
         <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>

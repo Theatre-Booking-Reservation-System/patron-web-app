@@ -1,37 +1,143 @@
 <app-header />
 
 <main class="home">
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero__overlay">
-      <div class="hero__content">
-        <h1 class="hero__title">{{ 'hero.title' | translate }}</h1>
-        <p class="hero__subtitle">{{ 'hero.subtitle' | translate }}</p>
-        <a class="hero__cta" routerLink="/productions">
-          {{ 'action.browseProductions' | translate }}
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
+  <!-- Hero slider -->
+  <section class="hero" aria-roledescription="carousel">
+    @for (s of slides; track s.image; let i = $index) {
+      <div
+        class="hero__slide"
+        [class.hero__slide--active]="current() === i"
+        [style.backgroundImage]="'url(' + s.image + ')'"
+        [attr.aria-hidden]="current() !== i"
+      >
+        <div class="hero__overlay">
+          <div class="hero__content">
+            <span class="hero__eyebrow">{{ 'hero.eyebrow' | translate }}</span>
+            <h1 class="hero__title">{{ s.titleKey | translate }}</h1>
+            <p class="hero__subtitle">{{ s.subtitleKey | translate }}</p>
+            <a class="hero__cta" routerLink="/productions">
+              {{ 'action.browseProductions' | translate }}
+              <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </div>
       </div>
+    }
+
+    <button class="hero__arrow hero__arrow--prev" (click)="prev()" aria-label="Previous slide">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button class="hero__arrow hero__arrow--next" (click)="next()" aria-label="Next slide">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <div class="hero__dots">
+      @for (s of slides; track s.image; let i = $index) {
+        <button
+          class="hero__dot"
+          [class.hero__dot--active]="current() === i"
+          (click)="goTo(i)"
+          [attr.aria-label]="'Go to slide ' + (i + 1)"
+        ></button>
+      }
     </div>
   </section>
 
-  <!-- Upcoming Productions -->
+  <!-- Search bar -->
+  <section class="search-wrap">
+    <form class="search" (submit)="onSearch($event)">
+      <div class="search__field">
+        <mat-icon>search</mat-icon>
+        <input type="text" [placeholder]="'home.searchPh' | translate" [(ngModel)]="query" name="q" />
+      </div>
+      <button type="submit" class="search__btn">{{ 'home.search' | translate }}</button>
+
+      <div class="search__filters">
+        <button type="button" class="search__filter">
+          <mat-icon>calendar_today</mat-icon>
+          <span>{{ 'home.allDates' | translate }}</span>
+          <mat-icon class="search__caret">expand_more</mat-icon>
+        </button>
+        <button type="button" class="search__filter">
+          <mat-icon>local_offer</mat-icon>
+          <span>{{ 'home.allCategories' | translate }}</span>
+          <mat-icon class="search__caret">expand_more</mat-icon>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Personalized: greeting + your upcoming bookings (logged in only) -->
+  @if (isAuthenticated()) {
+    <section class="section welcome">
+      <div class="welcome__head">
+        <div>
+          <h2 class="welcome__title">{{ 'home.welcomeBack' | translate }}, {{ firstName }} 👋</h2>
+          @if (myUpcoming.length) {
+            <p class="welcome__sub">{{ 'home.yourUpcoming' | translate }}</p>
+          }
+        </div>
+        <a class="section__link" routerLink="/my-bookings">{{ 'account.myBookings' | translate }}</a>
+      </div>
+
+      @if (myUpcoming.length) {
+        <div class="mybookings">
+          @for (b of myUpcoming; track b.bookingId) {
+            <div class="mybooking">
+              <img class="mybooking__img" [src]="b.image" [alt]="b.production" />
+              <div class="mybooking__info">
+                <strong>{{ b.production }}</strong>
+                <span class="mybooking__row"><mat-icon>event</mat-icon> {{ b.dateTime }}</span>
+                <span class="mybooking__row"><mat-icon>event_seat</mat-icon> {{ b.seats }}</span>
+              </div>
+              <a class="mybooking__btn" routerLink="/ticket">{{ 'home.viewTicket' | translate }}</a>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <!-- Now Showing -->
   <section class="section">
     <div class="section__head">
-      <h2 class="section__title">{{ 'productions.upcoming' | translate }}</h2>
+      <h2 class="section__title">{{ 'home.nowShowing' | translate }}</h2>
       <a class="section__link" routerLink="/productions">{{ 'action.viewAll' | translate }}</a>
     </div>
-
     <div class="cards">
-      @for (p of productions; track p.id) {
-        <a class="prod-card" [routerLink]="['/productions', p.id]">
-          <div class="prod-card__media">
+      @for (p of nowShowing; track p.id) {
+        <a class="show-card" [routerLink]="['/productions', p.id]">
+          <div class="show-card__media">
             <img [src]="p.image" [alt]="p.name" />
+            <span class="show-card__badge">{{ p.genreKey | translate }}</span>
           </div>
-          <div class="prod-card__body">
-            <h3 class="prod-card__name">{{ p.name }}</h3>
-            <span class="prod-card__genre lang-chip">{{ p.genreKey | translate }}</span>
-            <p class="prod-card__dates"><mat-icon>event</mat-icon> {{ p.dateRange }}</p>
+          <div class="show-card__body">
+            <h3 class="show-card__name">{{ p.name }}</h3>
+            <p class="show-card__row"><mat-icon>event</mat-icon> {{ p.dateRange }}</p>
+            <p class="show-card__row"><mat-icon>place</mat-icon> {{ p.venue }}</p>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+
+  <!-- Upcoming Shows -->
+  <section class="section section--alt">
+    <div class="section__head">
+      <h2 class="section__title">{{ 'home.upcomingShows' | translate }}</h2>
+      <a class="section__link" routerLink="/productions">{{ 'action.viewAll' | translate }}</a>
+    </div>
+    <div class="cards">
+      @for (p of upcoming; track p.id) {
+        <a class="show-card" [routerLink]="['/productions', p.id]">
+          <div class="show-card__media">
+            <img [src]="p.image" [alt]="p.name" />
+            <span class="show-card__badge">{{ p.genreKey | translate }}</span>
+          </div>
+          <div class="show-card__body">
+            <h3 class="show-card__name">{{ p.name }}</h3>
+            <p class="show-card__row"><mat-icon>event</mat-icon> {{ p.dateRange }}</p>
+            <p class="show-card__row"><mat-icon>place</mat-icon> {{ p.venue }}</p>
           </div>
         </a>
       }

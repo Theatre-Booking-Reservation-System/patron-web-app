@@ -1,0 +1,26 @@
+<app-header />
+
+<main class="contact">
+  <header class="ph">
+    <div class="ph__inner">
+      <h1 class="ph__title">{{ 'contact.title' | translate }}</h1>
+      <p class="ph__lead">{{ 'contact.lead' | translate }}</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="details">
+      @for (d of details; track d.labelKey) {
+        <div class="detail">
+          <span class="detail__icon"><mat-icon>{{ d.icon }}</mat-icon></span>
+          <div>
+            <span class="detail__label">{{ d.labelKey | translate }}</span>
+            <p class="detail__value">{{ d.value }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</main>
+
+<app-footer />

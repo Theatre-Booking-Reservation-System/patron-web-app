@@ -1,0 +1,102 @@
+<app-header />
+
+<main class="profile">
+  <header class="ph">
+    <div class="ph__inner">
+      <div class="ph__avatar">{{ initials }}</div>
+      <div>
+        <h1 class="ph__title">{{ fullName }}</h1>
+        <p class="ph__lead">{{ email }}</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- Stats -->
+    <div class="stats">
+      @for (s of stats; track s.labelKey) {
+        <div class="stat">
+          <span class="stat__icon"><mat-icon>{{ s.icon }}</mat-icon></span>
+          <div>
+            <span class="stat__value">{{ s.value }}</span>
+            <span class="stat__label">{{ s.labelKey | translate }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Personal details -->
+    <section class="card">
+      <div class="card__head">
+        <h2 class="card__title">{{ 'profile.personal' | translate }}</h2>
+        @if (!editing()) {
+          <button class="btn btn--ghost" (click)="edit()">
+            <mat-icon>edit</mat-icon> {{ 'profile.edit' | translate }}
+          </button>
+        }
+      </div>
+
+      @if (saved()) {
+        <p class="ok" role="status"><mat-icon>check_circle</mat-icon> {{ 'profile.saved' | translate }}</p>
+      }
+
+      <form (submit)="save($event)">
+        <div class="grid">
+          <div class="field">
+            <label>{{ 'profile.fullName' | translate }}</label>
+            @if (editing()) {
+              <input name="fn" [(ngModel)]="fullName" required />
+            } @else {
+              <p class="field__value">{{ fullName }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label>{{ 'profile.email' | translate }}</label>
+            @if (editing()) {
+              <input name="em" type="email" [(ngModel)]="email" required />
+            } @else {
+              <p class="field__value">{{ email }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label>{{ 'profile.phone' | translate }}</label>
+            @if (editing()) {
+              <input name="ph" type="tel" [(ngModel)]="phone" />
+            } @else {
+              <p class="field__value">{{ phone }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label>{{ 'profile.nic' | translate }}</label>
+            @if (editing()) {
+              <input name="nic" [(ngModel)]="nic" />
+            } @else {
+              <p class="field__value">{{ nic }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label>{{ 'profile.memberSince' | translate }}</label>
+            <p class="field__value">{{ memberSince }}</p>
+          </div>
+        </div>
+
+        @if (editing()) {
+          <div class="actions">
+            <button type="button" class="btn btn--ghost" (click)="cancel()">
+              {{ 'profile.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn btn--solid">
+              <mat-icon>save</mat-icon> {{ 'profile.save' | translate }}
+            </button>
+          </div>
+        }
+      </form>
+    </section>
+  </div>
+</main>
+
+<app-footer />

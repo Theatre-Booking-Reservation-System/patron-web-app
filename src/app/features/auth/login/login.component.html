@@ -1,53 +1,53 @@
 <div class="login">
   <div class="login__card">
-    <!-- Left half: welcome / booking-journey -->
+    <!-- Left half: brand panel -->
     <aside class="login__welcome">
       <img class="login__logo" src="assets/logo.png" alt="Sapumal Theatre" />
-      <h1 class="login__welcome-title">Welcome Back</h1>
-      <p class="login__welcome-sub">Sign in to continue your booking journey.</p>
+      <h1 class="login__welcome-title">{{ 'login.brandTagline' | translate }}</h1>
 
       <ul class="login__perks">
         <li>
           <span class="login__perk-icon"><mat-icon>confirmation_number</mat-icon></span>
-          <span>Book Tickets</span>
+          <span>{{ 'register.benefit2' | translate }}</span>
         </li>
         <li>
           <span class="login__perk-icon"><mat-icon>event_seat</mat-icon></span>
-          <span>Manage Bookings</span>
+          <span>{{ 'register.benefit3' | translate }}</span>
         </li>
         <li>
           <span class="login__perk-icon"><mat-icon>local_offer</mat-icon></span>
-          <span>Exclusive Offers</span>
+          <span>{{ 'register.benefit4' | translate }}</span>
         </li>
       </ul>
     </aside>
 
     <!-- Right half: login form -->
     <form class="login__form" (submit)="onSubmit($event)">
-      <h2 class="login__heading">Log In</h2>
+      <h2 class="login__heading">{{ 'login.title' | translate }}</h2>
+      <p class="login__sub">{{ 'login.sub' | translate }}</p>
 
-      <label class="field-label" for="email">Email Address</label>
+      <label class="field-label" for="email">{{ 'register.email' | translate }}</label>
       <label class="field">
         <mat-icon class="field__icon">mail_outline</mat-icon>
         <input
           id="email"
           type="email"
           name="email"
-          placeholder="Enter your email"
+          [placeholder]="'register.emailPh' | translate"
           autocomplete="email"
           [(ngModel)]="email"
           required
         />
       </label>
 
-      <label class="field-label" for="password">Password</label>
+      <label class="field-label" for="password">{{ 'register.password' | translate }}</label>
       <label class="field">
         <mat-icon class="field__icon">lock_outline</mat-icon>
         <input
           id="password"
           [type]="showPassword() ? 'text' : 'password'"
           name="password"
-          placeholder="Enter your password"
+          [placeholder]="'register.passwordPh' | translate"
           autocomplete="current-password"
           [(ngModel)]="password"
           required
@@ -68,13 +68,16 @@
 
       <button type="submit" class="login__submit" [disabled]="loading()">
         @if (loading()) {
-          Logging in…
+          …
         } @else {
-          Log In
+          {{ 'login.button' | translate }}
         }
       </button>
 
-      <p class="login__signup">Don't have an account? <a routerLink="/register">Sign Up</a></p>
+      <p class="login__signup">
+        {{ 'login.noAccount' | translate }}
+        <a routerLink="/register">{{ 'action.signup' | translate }}</a>
+      </p>
     </form>
   </div>
 </div>

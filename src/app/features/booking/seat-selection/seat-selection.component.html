@@ -1,0 +1,95 @@
+<app-header />
+
+<main class="seats">
+  @if (booking.draft().production; as p) {
+    <nav class="crumbs">
+      <a routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <a [routerLink]="['/productions', p.id]">{{ p.name }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ 'book.step.seats' | translate }}</span>
+    </nav>
+
+    <h1 class="seats__title">{{ 'book.step.seats' | translate }}</h1>
+
+    <div class="seats__grid">
+      <!-- Seat map -->
+      <section class="card map">
+        <div class="stage">{{ 'seats.stage' | translate }}</div>
+
+        @for (g of groups(); track g.location) {
+          <div class="loc">
+            <h4 class="loc__label">{{ g.label }}</h4>
+            @for (r of g.rows; track r.row) {
+              <div class="row">
+                <span class="row__label">{{ r.row }}</span>
+                <div class="row__seats">
+                  @for (s of r.seats; track s.id) {
+                    <button
+                      class="seat"
+                      [class.seat--booked]="s.status === 'booked'"
+                      [class.seat--selected]="s.status === 'selected'"
+                      [class.seat--premium]="isPremium(s.tierId) && s.status === 'available'"
+                      [disabled]="s.status === 'booked'"
+                      (click)="toggleSeat(s)"
+                      [attr.aria-label]="s.row + s.number"
+                      [attr.title]="s.row + s.number"
+                    ></button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Legend -->
+        <div class="legend">
+          <span><i class="dot dot--available"></i> {{ 'seats.available' | translate }}</span>
+          <span><i class="dot dot--selected"></i> {{ 'seats.selected' | translate }}</span>
+          <span><i class="dot dot--booked"></i> {{ 'seats.booked' | translate }}</span>
+          <span><i class="dot dot--premium"></i> {{ 'seats.premium' | translate }}</span>
+        </div>
+      </section>
+
+      <!-- Selection summary -->
+      <aside class="card summary">
+        <h3 class="summary__title">{{ 'seats.yourSelection' | translate }}</h3>
+
+        <div class="summary__meta">
+          <div><span>{{ 'seats.date' | translate }}</span><strong>{{ booking.draft().performance?.date }}</strong></div>
+          <div><span>{{ 'seats.time' | translate }}</span><strong>{{ booking.draft().performance?.clockLabel }}</strong></div>
+        </div>
+
+        @if (selected().length) {
+          <ul class="picks">
+            @for (s of selected(); track s.seatId) {
+              <li>
+                <span class="picks__seat">{{ s.label }}</span>
+                <span class="picks__tier muted">{{ s.tierLabel }}</span>
+                <span class="picks__price">LKR {{ s.price.toLocaleString() }}</span>
+              </li>
+            }
+          </ul>
+          <div class="summary__total">
+            <span>{{ 'book.subtotal' | translate }}</span>
+            <strong>LKR {{ subtotal().toLocaleString() }}</strong>
+          </div>
+        } @else {
+          <p class="summary__empty muted">{{ 'seats.none' | translate }}</p>
+        }
+
+        <button class="btn btn--solid" [disabled]="!selected().length" (click)="continue()">
+          {{ 'seats.continueDetails' | translate }} <mat-icon>arrow_forward</mat-icon>
+        </button>
+        <a class="btn btn--ghost" [routerLink]="['/book', p.id, 'performance']">
+          <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
+        </a>
+      </aside>
+    </div>
+  } @else {
+    <p class="muted seats__missing">{{ 'prod.empty' | translate }}</p>
+    <a class="btn btn--solid" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  }
+</main>
+
+<app-footer />

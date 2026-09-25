@@ -1,0 +1,124 @@
+<div class="register">
+  <div class="register__card">
+    <!-- Left: brand / community panel -->
+    <aside class="register__brand">
+      <img class="register__logo" src="assets/logo.png" alt="Sapumal Theatre" />
+      <h1 class="register__brand-title">{{ 'register.communityTitle' | translate }}</h1>
+      <ul class="register__perks">
+        @for (b of benefits; track b) {
+          <li>
+            <span class="register__perk-icon"><mat-icon>check</mat-icon></span>
+            {{ b | translate }}
+          </li>
+        }
+      </ul>
+    </aside>
+
+    <!-- Right: create-account form -->
+    <form class="register__form" (submit)="onSubmit($event)">
+      <h2 class="register__title">{{ 'register.title' | translate }}</h2>
+      <p class="register__subtitle">{{ 'register.subtitle' | translate }}</p>
+
+      <label class="field-label" for="name">{{ 'register.fullName' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">person_outline</mat-icon>
+        <input
+          id="name"
+          type="text"
+          name="name"
+          [placeholder]="'register.fullNamePh' | translate"
+          autocomplete="name"
+          [(ngModel)]="name"
+          required
+        />
+      </label>
+
+      <label class="field-label" for="email">{{ 'register.email' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">mail_outline</mat-icon>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [placeholder]="'register.emailPh' | translate"
+          autocomplete="email"
+          [(ngModel)]="email"
+          required
+        />
+      </label>
+
+      <label class="field-label" for="nic">{{ 'register.nic' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">badge</mat-icon>
+        <input
+          id="nic"
+          type="text"
+          name="nic"
+          [placeholder]="'register.nicPh' | translate"
+          [(ngModel)]="nic"
+          required
+        />
+      </label>
+
+      <label class="field-label" for="password">{{ 'register.password' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">lock_outline</mat-icon>
+        <input
+          id="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          name="password"
+          [placeholder]="'register.passwordPh' | translate"
+          autocomplete="new-password"
+          [(ngModel)]="password"
+          required
+        />
+        <button
+          type="button"
+          class="field__toggle"
+          (click)="togglePassword()"
+          [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+        >
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </label>
+
+      <label class="field-label" for="confirm">{{ 'register.confirm' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">lock_outline</mat-icon>
+        <input
+          id="confirm"
+          [type]="showPassword() ? 'text' : 'password'"
+          name="confirm"
+          [placeholder]="'register.confirmPh' | translate"
+          autocomplete="new-password"
+          [(ngModel)]="confirm"
+          required
+        />
+      </label>
+
+      <label class="register__agree">
+        <input type="checkbox" name="agree" [(ngModel)]="agree" />
+        <span>{{ 'register.agree' | translate }}</span>
+      </label>
+
+      @if (error()) {
+        <p class="register__error" role="alert">
+          <mat-icon>error_outline</mat-icon> {{ error()! | translate }}
+        </p>
+      }
+
+      <button type="submit" class="register__submit" [disabled]="loading()">
+        @if (loading()) {
+          …
+        } @else {
+          {{ 'register.submit' | translate }}
+        }
+      </button>
+
+      <p class="register__login">
+        {{ 'register.haveAccount' | translate }}
+        <a routerLink="/login">{{ 'action.login' | translate }}</a>
+      </p>
+    </form>
+  </div>
+</div>

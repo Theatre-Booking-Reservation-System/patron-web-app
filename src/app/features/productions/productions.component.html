@@ -1,0 +1,56 @@
+<app-header />
+
+<main class="productions">
+  <!-- Page header -->
+  <header class="ph">
+    <div class="ph__inner">
+      <h1 class="ph__title">{{ 'prod.title' | translate }}</h1>
+      <p class="ph__lead">{{ 'prod.subtitle' | translate }}</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- Language filter -->
+    <div class="filters">
+      <span class="filters__label"><mat-icon>translate</mat-icon> {{ 'prod.filter.language' | translate }}</span>
+      <div class="filters__chips">
+        @for (f of filters; track f.value) {
+          <button
+            class="chip"
+            [class.chip--active]="filter() === f.value"
+            (click)="setFilter(f.value)"
+          >
+            {{ f.labelKey | translate }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Grid -->
+    @if (productions().length) {
+      <div class="grid">
+        @for (p of productions(); track p.id) {
+          <a class="card" [routerLink]="['/productions', p.id]">
+            <div class="card__media">
+              <img [src]="p.image" [alt]="p.name" />
+              <span class="card__lang">{{ langLabelKey(p.language) | translate }}</span>
+            </div>
+            <div class="card__body">
+              <h3 class="card__name">{{ p.name }}</h3>
+              <span class="card__genre lang-chip">{{ p.genreKey | translate }}</span>
+              <p class="card__dates"><mat-icon>event</mat-icon> {{ p.dateRange }}</p>
+              <div class="card__foot">
+                <span class="card__price">LKR {{ p.basePrice.toLocaleString() }}+</span>
+                <span class="card__cta">{{ 'prod.viewDetails' | translate }} <mat-icon>arrow_forward</mat-icon></span>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <p class="empty">{{ 'prod.empty' | translate }}</p>
+    }
+  </div>
+</main>
+
+<app-footer />

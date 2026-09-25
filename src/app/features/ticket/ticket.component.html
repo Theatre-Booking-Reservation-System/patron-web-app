@@ -1,0 +1,83 @@
+<app-header />
+
+<main class="ticket-page">
+  <!-- Success banner -->
+  <section class="confirm">
+    <span class="confirm__check"><mat-icon>check</mat-icon></span>
+    <h1 class="confirm__title">{{ 'ticket.confirmedTitle' | translate }}</h1>
+    <p class="confirm__text">{{ 'ticket.confirmedText' | translate }}</p>
+  </section>
+
+  <!-- Ticket stub -->
+  <section class="stub">
+    <!-- Left: details -->
+    <div class="stub__main">
+      <div class="stub__brand">
+        <img src="assets/logo.png" alt="Sapumal Theatre" />
+        <div>
+          <span class="stub__brand-name">SAPUMAL THEATRE</span>
+          <span class="stub__brand-tag">{{ 'ticket.eticket' | translate }}</span>
+        </div>
+      </div>
+
+      <h2 class="stub__production">{{ ticket.production }}</h2>
+
+      <div class="stub__grid">
+        <div class="stub__row">
+          <span class="stub__label">{{ 'ticket.dateTime' | translate }}</span>
+          <span class="stub__value">{{ ticket.dateTime }}</span>
+        </div>
+        <div class="stub__row">
+          <span class="stub__label">{{ 'ticket.venue' | translate }}</span>
+          <span class="stub__value">{{ ticket.venue }}</span>
+        </div>
+        <div class="stub__row">
+          <span class="stub__label">{{ 'ticket.section' | translate }}</span>
+          <span class="stub__value">{{ ticket.section }}</span>
+        </div>
+        <div class="stub__row">
+          <span class="stub__label">{{ 'ticket.seats' | translate }}</span>
+          <span class="stub__value">{{ ticket.seats }}</span>
+        </div>
+        <div class="stub__row">
+          <span class="stub__label">{{ 'ticket.patron' | translate }}</span>
+          <span class="stub__value">{{ ticket.patron }}</span>
+        </div>
+        <div class="stub__row">
+          <span class="stub__label">{{ 'ticket.bookingId' | translate }}</span>
+          <span class="stub__value stub__value--mono">{{ ticket.bookingId }}</span>
+        </div>
+      </div>
+
+      <div class="stub__total">
+        <span>{{ 'ticket.totalPaid' | translate }}</span>
+        <strong>{{ ticket.total }}</strong>
+      </div>
+    </div>
+
+    <!-- Perforation -->
+    <div class="stub__perf" aria-hidden="true"></div>
+
+    <!-- Right: QR -->
+    <div class="stub__qr">
+      <div class="stub__qr-box">
+        <app-qr-code [value]="ticket.bookingId" />
+      </div>
+      <p class="stub__qr-hint">{{ 'ticket.present' | translate }}</p>
+      <span class="stub__enjoy">{{ 'ticket.enjoy' | translate }}</span>
+    </div>
+  </section>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn--solid" (click)="download()">
+      <mat-icon>download</mat-icon> {{ 'ticket.download' | translate }}
+    </button>
+    <button class="btn btn--ghost" (click)="print()">
+      <mat-icon>print</mat-icon> {{ 'ticket.print' | translate }}
+    </button>
+    <a class="btn btn--link" routerLink="/my-bookings">{{ 'ticket.viewBookings' | translate }}</a>
+  </div>
+</main>
+
+<app-footer />
