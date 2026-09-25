@@ -1,0 +1,42 @@
+<app-header />
+
+<main class="home">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__overlay">
+      <div class="hero__content">
+        <h1 class="hero__title">{{ 'hero.title' | translate }}</h1>
+        <p class="hero__subtitle">{{ 'hero.subtitle' | translate }}</p>
+        <a class="hero__cta" routerLink="/productions">
+          {{ 'action.browseProductions' | translate }}
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Productions -->
+  <section class="section">
+    <div class="section__head">
+      <h2 class="section__title">{{ 'productions.upcoming' | translate }}</h2>
+      <a class="section__link" routerLink="/productions">{{ 'action.viewAll' | translate }}</a>
+    </div>
+
+    <div class="cards">
+      @for (p of productions; track p.id) {
+        <a class="prod-card" [routerLink]="['/productions', p.id]">
+          <div class="prod-card__media">
+            <img [src]="p.image" [alt]="p.name" />
+          </div>
+          <div class="prod-card__body">
+            <h3 class="prod-card__name">{{ p.name }}</h3>
+            <span class="prod-card__genre lang-chip">{{ p.genreKey | translate }}</span>
+            <p class="prod-card__dates"><mat-icon>event</mat-icon> {{ p.dateRange }}</p>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+</main>
+
+<app-footer />

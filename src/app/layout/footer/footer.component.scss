@@ -1,0 +1,130 @@
+:host {
+  display: block;
+}
+
+.footer {
+  background: var(--brand-maroon-dark);
+  color: rgba(245, 239, 224, 0.85);
+  margin-top: 3rem;
+}
+
+.footer__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1.2fr 1fr;
+  gap: 2rem;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.footer__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+}
+.footer__logo img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+.footer__tagline {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0.4rem 0 0;
+  max-width: 260px;
+}
+
+.footer__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand-gold);
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.footer__col a {
+  font-size: 0.85rem;
+  color: rgba(245, 239, 224, 0.85);
+  transition: color 0.15s ease;
+}
+.footer__col a:hover {
+  color: #fff;
+}
+
+.footer__col p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  margin: 0;
+}
+.footer__col p mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--brand-gold);
+}
+
+.footer__social {
+  display: flex;
+  gap: 0.6rem;
+}
+.footer__social a {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5efe0;
+}
+.footer__social a:hover {
+  background: var(--brand-gold);
+  color: var(--brand-maroon-dark);
+}
+
+/* Bottom bar */
+.footer__bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+.footer__legal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.footer__legal a:hover {
+  color: #fff;
+}
+
+@media (max-width: 860px) {
+  .footer__inner {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer__bar {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+@media (max-width: 500px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+  }
+}

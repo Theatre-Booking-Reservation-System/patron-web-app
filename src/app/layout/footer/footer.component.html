@@ -1,0 +1,50 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <!-- Brand -->
+    <div class="footer__col footer__brand">
+      <a class="footer__logo" routerLink="/">
+        <img src="assets/logo.png" alt="Sapumal Theatre" />
+        <span>SAPUMAL THEATRE</span>
+      </a>
+      <p class="footer__tagline">{{ 'footer.tagline' | translate }}</p>
+    </div>
+
+    <!-- Quick links -->
+    <div class="footer__col">
+      <h4 class="footer__title">{{ 'footer.quickLinks' | translate }}</h4>
+      <a routerLink="/">{{ 'nav.home' | translate }}</a>
+      <a routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+      <a routerLink="/about">{{ 'nav.about' | translate }}</a>
+      <a routerLink="/plan-your-visit">{{ 'nav.planYourVisit' | translate }}</a>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer__col">
+      <h4 class="footer__title">{{ 'footer.contact' | translate }}</h4>
+      <p><mat-icon>place</mat-icon> Colombo 07, Sri Lanka</p>
+      <p><mat-icon>call</mat-icon> +94 11 234 5678</p>
+      <p><mat-icon>mail_outline</mat-icon> hello&#64;sapumaltheatre.lk</p>
+    </div>
+
+    <!-- Social -->
+    <div class="footer__col">
+      <h4 class="footer__title">{{ 'footer.followUs' | translate }}</h4>
+      <div class="footer__social">
+        <a href="#" aria-label="Facebook"><mat-icon>facebook</mat-icon></a>
+        <a href="#" aria-label="Instagram"><mat-icon>photo_camera</mat-icon></a>
+        <a href="#" aria-label="YouTube"><mat-icon>smart_display</mat-icon></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__bar">
+    <span>© {{ year }} Sapumal Theatre. {{ 'footer.rights' | translate }}</span>
+    <nav class="footer__legal">
+      <a routerLink="/privacy">{{ 'footer.privacy' | translate }}</a>
+      <span>·</span>
+      <a routerLink="/terms">{{ 'footer.terms' | translate }}</a>
+      <span>·</span>
+      <a routerLink="/support">{{ 'footer.support' | translate }}</a>
+    </nav>
+  </div>
+</footer>
