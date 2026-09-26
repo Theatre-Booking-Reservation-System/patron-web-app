@@ -6,6 +6,8 @@ import {
   AuthUser,
   LoginRequest,
   LoginResponse,
+  LoyaltyEnrollResponse,
+  PatronDetailResponse,
   PatronRegisterRequest,
   PatronRegisterResponse,
 } from '../models/auth.models';
@@ -37,6 +39,19 @@ export class AuthService {
 
   register(payload: PatronRegisterRequest): Observable<PatronRegisterResponse> {
     return this.http.post<PatronRegisterResponse>(`${this.baseUrl}/patron/register`, payload);
+  }
+
+  /** Enrol a patron in the loyalty programme. Returns the generated card number. */
+  enrollLoyalty(patronId: string): Observable<LoyaltyEnrollResponse> {
+    return this.http.post<LoyaltyEnrollResponse>(
+      `${this.baseUrl}/patron/${patronId}/loyalty`,
+      {},
+    );
+  }
+
+  /** Fetch a single patron's details (requires authentication). */
+  getPatron(patronId: string): Observable<PatronDetailResponse> {
+    return this.http.get<PatronDetailResponse>(`${this.baseUrl}/patron/${patronId}`);
   }
 
   logout(): void {

@@ -82,6 +82,44 @@
         {{ 'perf.continueSeats' | translate }} <mat-icon>arrow_forward</mat-icon>
       </button>
     </div>
+
+    <!-- Loyalty: members see a note; everyone else sees the enrol card -->
+    <section class="loyalty-card" [class.loyalty-card--member]="isMember()">
+      <span class="loyalty-card__icon"><mat-icon>workspace_premium</mat-icon></span>
+      <div class="loyalty-card__body">
+        @if (isMember()) {
+          <h3 class="loyalty-card__title">{{ 'loyalty.perf.memberTitle' | translate }}</h3>
+          <p class="loyalty-card__text">{{ 'loyalty.perf.memberText' | translate }}</p>
+
+          <p class="loyalty-card__cond-title">{{ 'loyalty.cond.title' | translate }}</p>
+          <ul class="loyalty-card__conds">
+            @for (c of loyaltyConditions; track c) {
+              <li><mat-icon>check</mat-icon> {{ c | translate }}</li>
+            }
+          </ul>
+        } @else {
+          <h3 class="loyalty-card__title">{{ 'loyalty.card.title' | translate }}</h3>
+          <p class="loyalty-card__text">{{ 'loyalty.perf.text' | translate }}</p>
+
+          <p class="loyalty-card__cond-title">{{ 'loyalty.cond.title' | translate }}</p>
+          <ul class="loyalty-card__conds">
+            @for (c of loyaltyConditions; track c) {
+              <li><mat-icon>check</mat-icon> {{ c | translate }}</li>
+            }
+          </ul>
+
+          <div class="loyalty-card__actions">
+            <button class="btn btn--solid" (click)="enrollLoyalty()" [disabled]="enrolling()">
+              <mat-icon>workspace_premium</mat-icon>
+              {{ (enrolling() ? 'common.loading' : 'loyalty.enroll') | translate }}
+            </button>
+            <a class="loyalty-card__link" routerLink="/loyalty">
+              {{ 'loyalty.perf.view' | translate }} <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        }
+      </div>
+    </section>
   } @else {
     <p class="muted perf__missing">{{ 'prod.empty' | translate }}</p>
     <a class="btn btn--solid" routerLink="/productions">{{ 'nav.productions' | translate }}</a>

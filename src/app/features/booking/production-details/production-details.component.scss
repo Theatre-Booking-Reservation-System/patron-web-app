@@ -98,6 +98,25 @@
   font-size: 0.85rem;
   color: var(--brand-muted);
 }
+.hero__early {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand-warning);
+  background: var(--brand-gold-soft);
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  margin: 0 0 1rem;
+}
+.hero__early mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--brand-gold);
+}
+
 .hero__cta {
   display: inline-flex;
   align-items: center;
@@ -273,4 +292,115 @@
   .cast {
     grid-template-columns: 1fr;
   }
+}
+
+/* Loyalty enrol prompt in the sidebar */
+.loyalty-enrol {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border: 1px solid #e7c987;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff7e6 0%, #fdeccd 100%);
+}
+.loyalty-enrol__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.98rem;
+  color: var(--brand-text);
+  margin-bottom: 0.75rem;
+}
+.loyalty-enrol__head mat-icon {
+  color: var(--brand-maroon);
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+.loyalty-enrol__cond-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--brand-text-soft);
+  margin: 0 0 0.4rem;
+}
+.loyalty-enrol__conds {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.loyalty-enrol__conds li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: var(--brand-text);
+  line-height: 1.4;
+}
+.loyalty-enrol__conds mat-icon {
+  flex: none;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin-top: 0.1rem;
+  color: var(--brand-maroon);
+}
+.loyalty-enrol__btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--brand-maroon);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.loyalty-enrol__btn:hover {
+  background: var(--brand-maroon-dark);
+}
+.loyalty-enrol__btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.loyalty-enrol__link {
+  display: block;
+  text-align: center;
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brand-maroon);
+}
+.loyalty-enrol__link:hover {
+  text-decoration: underline;
+}
+
+.loyalty-note {
+  margin-top: 1.25rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #b9dcb0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f2f8f0 0%, #e3f1e0 100%);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.83rem;
+  color: var(--brand-text);
+  line-height: 1.4;
+}
+.loyalty-note mat-icon {
+  flex: none;
+  color: #2f7d32;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.05rem;
 }

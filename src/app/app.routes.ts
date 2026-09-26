@@ -51,6 +51,7 @@ export const routes: Routes = [
   },
   {
     path: 'book/:id/details',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/booking/booking-details/booking-details.component').then(
         (m) => m.BookingDetailsComponent,
@@ -102,6 +103,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/account/profile/profile.component').then((m) => m.ProfileComponent),
+  },
+  {
+    // Public: anyone can view the loyalty programme; enrolling requires login.
+    path: 'loyalty',
+    loadComponent: () =>
+      import('./features/loyalty/loyalty.component').then((m) => m.LoyaltyComponent),
   },
 
   // Legal.

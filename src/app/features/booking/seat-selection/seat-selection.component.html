@@ -28,9 +28,9 @@
                     <button
                       class="seat"
                       [class.seat--booked]="s.status === 'booked'"
+                      [class.seat--unavailable]="s.status === 'unavailable'"
                       [class.seat--selected]="s.status === 'selected'"
-                      [class.seat--premium]="isPremium(s.tierId) && s.status === 'available'"
-                      [disabled]="s.status === 'booked'"
+                      [disabled]="s.status === 'booked' || s.status === 'unavailable'"
                       (click)="toggleSeat(s)"
                       [attr.aria-label]="s.row + s.number"
                       [attr.title]="s.row + s.number"
@@ -47,7 +47,7 @@
           <span><i class="dot dot--available"></i> {{ 'seats.available' | translate }}</span>
           <span><i class="dot dot--selected"></i> {{ 'seats.selected' | translate }}</span>
           <span><i class="dot dot--booked"></i> {{ 'seats.booked' | translate }}</span>
-          <span><i class="dot dot--premium"></i> {{ 'seats.premium' | translate }}</span>
+          <span><i class="dot dot--unavailable"></i> {{ 'seats.unavailable' | translate }}</span>
         </div>
       </section>
 
@@ -67,6 +67,15 @@
                 <span class="picks__seat">{{ s.label }}</span>
                 <span class="picks__tier muted">{{ s.tierLabel }}</span>
                 <span class="picks__price">LKR {{ s.price.toLocaleString() }}</span>
+                <button
+                  type="button"
+                  class="picks__remove"
+                  (click)="removeSeat(s.seatId)"
+                  [attr.aria-label]="('seats.remove' | translate) + ' ' + s.label"
+                  [attr.title]="'seats.remove' | translate"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
               </li>
             }
           </ul>

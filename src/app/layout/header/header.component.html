@@ -87,6 +87,9 @@
               <a routerLink="/profile" (click)="userOpen.set(false)">
                 <mat-icon>person</mat-icon> {{ 'account.profile' | translate }}
               </a>
+              <a routerLink="/loyalty" (click)="userOpen.set(false)">
+                <mat-icon>workspace_premium</mat-icon> {{ 'loyalty.nav' | translate }}
+              </a>
               <button class="header__logout" (click)="logout()">
                 <mat-icon>logout</mat-icon> {{ 'account.logout' | translate }}
               </button>

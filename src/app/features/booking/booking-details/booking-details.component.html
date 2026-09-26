@@ -34,17 +34,16 @@
           <h3 class="section-title">{{ 'bd.additionalInfo' | translate }}</h3>
 
           <div class="field">
-            <label for="tt">{{ 'bd.ticketType' | translate }}</label>
-            <select
-              id="tt"
-              name="tt"
-              [ngModel]="concession"
-              (ngModelChange)="onConcessionChange($event)"
-            >
-              @for (c of concessions; track c.type) {
-                <option [value]="c.type">{{ c.labelKey | translate }}</option>
+            <label>{{ 'bd.ticketType' | translate }}</label>
+            <div class="ticket-type" aria-live="polite">
+              <span class="ticket-type__label">{{ selectedConcession().labelKey | translate }}</span>
+              @if (selectedConcession().discount > 0) {
+                <span class="ticket-type__badge">
+                  −{{ (selectedConcession().discount * 100) }}%
+                </span>
               }
-            </select>
+            </div>
+            <p class="field__hint"><mat-icon>auto_awesome</mat-icon> {{ 'bd.ticketTypeAuto' | translate }}</p>
           </div>
 
           @if (requiresId) {
@@ -54,17 +53,6 @@
               <p class="field__hint"><mat-icon>info</mat-icon> {{ 'bd.idHint' | translate }}</p>
             </div>
           }
-
-          <div class="field">
-            <label for="sr">{{ 'bd.specialRequests' | translate }}</label>
-            <textarea
-              id="sr"
-              name="sr"
-              rows="3"
-              [placeholder]="'bd.specialPh' | translate"
-              [(ngModel)]="specialRequests"
-            ></textarea>
-          </div>
         </section>
 
         <div class="bd__foot">

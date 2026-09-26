@@ -1,13 +1,14 @@
 // Production/default environment.
-// All microservices sit behind a single AWS ALB, routed by path prefix.
-const ALB = 'http://theatre-alb-1442845415.us-east-1.elb.amazonaws.com';
+// All microservices sit behind a single host, routed by path prefix.
+const HOST = 'http://ec2-3-237-240-69.compute-1.amazonaws.com';
 
 export const environment = {
   production: true,
   appName: 'Sapumal Theatre',
   services: {
-    identity: `${ALB}/identity-service`,
-    catalogue: `${ALB}/catalogue-service`,
-    booking: `${ALB}/booking-service`,
+    identity: `${HOST}/identity-service`,
+    catalogue: `${HOST}/catalogue-service`,
+    seat: `${HOST}/seat-service`,
+    booking: `${HOST}/booking-service`,
   },
 };

@@ -64,6 +64,26 @@
   border-color: var(--brand-maroon);
   box-shadow: 0 0 0 3px var(--brand-maroon-soft);
 }
+.field--invalid {
+  border-color: var(--brand-danger);
+  margin-bottom: 0.3rem;
+}
+.field--invalid:focus-within {
+  border-color: var(--brand-danger);
+  box-shadow: 0 0 0 3px var(--brand-danger-bg);
+}
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 0 0.7rem;
+  font-size: 0.76rem;
+  color: var(--brand-danger);
+  line-height: 1.35;
+}
+.field-error--agree {
+  margin-top: -0.5rem;
+}
 .field__icon {
   color: var(--brand-muted);
   font-size: 20px;
@@ -129,8 +149,13 @@
   transform: translateY(-1px);
 }
 .register__submit:disabled {
-  opacity: 0.7;
-  cursor: default;
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  background: var(--brand-maroon);
+}
+.register__submit:disabled:hover {
+  background: var(--brand-maroon);
   transform: none;
 }
 

@@ -1,0 +1,17 @@
+@if (current(); as c) {
+  <div class="overlay" (click)="onCancel()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <div class="modal__icon"><mat-icon>{{ c.icon || 'stars' }}</mat-icon></div>
+      <h2 class="modal__title">{{ c.title | translate }}</h2>
+      <p class="modal__message">{{ c.message | translate }}</p>
+      <div class="modal__actions">
+        <button class="modal__btn modal__btn--ghost" (click)="onCancel()">
+          {{ c.cancelText | translate }}
+        </button>
+        <button class="modal__btn modal__btn--solid" (click)="onConfirm()">
+          {{ c.confirmText | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

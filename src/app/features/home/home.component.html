@@ -164,11 +164,17 @@
           <div class="show-card__media">
             <img [src]="p.image" [alt]="p.name" />
             <span class="show-card__badge">{{ p.genreKey | translate }}</span>
+            @if (p.earlyAccess) {
+              <span class="show-card__early"><mat-icon>workspace_premium</mat-icon> {{ 'earlyModal.earlyBadge' | translate }}</span>
+            }
           </div>
           <div class="show-card__body">
             <h3 class="show-card__name">{{ p.name }}</h3>
             <p class="show-card__row"><mat-icon>event</mat-icon> {{ p.dateRange }}</p>
             <p class="show-card__row"><mat-icon>place</mat-icon> {{ p.venue }}</p>
+            @if (membersOnly(p)) {
+              <p class="show-card__members"><mat-icon>lock</mat-icon> {{ 'earlyModal.membersBook' | translate }}</p>
+            }
           </div>
         </a>
       }

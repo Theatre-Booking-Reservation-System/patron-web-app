@@ -5,6 +5,7 @@ import { HeaderComponent } from '../../../layout/header/header.component';
 import { FooterComponent } from '../../../layout/footer/footer.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { BookingStateService } from '../../../core/services/booking-state.service';
+import { AuthService } from '../../../core/services/auth.service';
 import {
   LOCATION_LABEL,
   buildSeatMap,
@@ -32,6 +33,7 @@ interface LocationGroup {
 })
 export class SeatSelectionComponent {
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
   readonly booking = inject(BookingStateService);
 
   // Local, mutable copy of the seat map for this session.
@@ -81,7 +83,7 @@ export class SeatSelectionComponent {
   readonly subtotal = computed(() => this.selected().reduce((sum, s) => sum + s.price, 0));
 
   toggleSeat(seat: Seat): void {
-    if (seat.status === 'booked') return;
+    if (seat.status === 'booked' || seat.status === 'unavailable') return;
     this.seats.update((list) =>
       list.map((s) =>
         s.id === seat.id
@@ -91,15 +93,29 @@ export class SeatSelectionComponent {
     );
   }
 
-  /** Whether a tier counts as "premium" for the legend colour. */
-  isPremium(tierId: string): boolean {
-    return tierId.includes('premium');
+  /** Deselect a seat from the "Your Selection" list, returning it to available. */
+  removeSeat(seatId: string): void {
+    this.seats.update((list) =>
+      list.map((s) => (s.id === seatId && s.status === 'selected' ? { ...s, status: 'available' } : s)),
+    );
   }
 
   continue(): void {
     const prod = this.booking.draft().production;
     if (!prod || !this.selected().length) return;
+
+    // Persist the seat picks so they survive a login round-trip.
     this.booking.setSeats(this.selected());
-    this.router.navigate(['/book', prod.id, 'details']);
+
+    const detailsUrl = `/book/${prod.id}/details`;
+
+    // Booking details require a signed-in patron. If not logged in, send them
+    // to login and return here afterwards via returnUrl.
+    if (!this.auth.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: detailsUrl } });
+      return;
+    }
+
+    this.router.navigateByUrl(detailsUrl);
   }
 }

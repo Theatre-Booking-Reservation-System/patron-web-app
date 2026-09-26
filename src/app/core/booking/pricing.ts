@@ -98,6 +98,17 @@ const BOOKED = new Set([
   'S-UC-9',
 ]);
 
+// Seats taken out of sale (blocked/held for access, sightline, or maintenance).
+// Not bookable, but shown distinctly from already-booked seats.
+const UNAVAILABLE = new Set([
+  'S-AA-1',
+  'S-AA-2',
+  'S-P-1',
+  'S-CA-1',
+  'S-UC-1',
+  'S-UC-18',
+]);
+
 export function buildSeatMap(): Seat[] {
   const seats: Seat[] = [];
   for (const spec of ROW_LAYOUT) {
@@ -108,7 +119,7 @@ export function buildSeatMap(): Seat[] {
         row: spec.row,
         number: n,
         tierId: spec.tierId,
-        status: BOOKED.has(id) ? 'booked' : 'available',
+        status: BOOKED.has(id) ? 'booked' : UNAVAILABLE.has(id) ? 'unavailable' : 'available',
       });
     }
   }

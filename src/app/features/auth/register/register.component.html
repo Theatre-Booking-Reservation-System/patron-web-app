@@ -15,82 +15,147 @@
     </aside>
 
     <!-- Right: create-account form -->
-    <form class="register__form" (submit)="onSubmit($event)">
+    <form class="register__form" (submit)="onSubmit($event)" novalidate>
       <h2 class="register__title">{{ 'register.title' | translate }}</h2>
       <p class="register__subtitle">{{ 'register.subtitle' | translate }}</p>
 
+      <!-- Full name -->
       <label class="field-label" for="name">{{ 'register.fullName' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(name0.touched || submitted()) && !nameValid()">
         <mat-icon class="field__icon">person_outline</mat-icon>
         <input
           id="name"
           type="text"
           name="name"
+          #name0="ngModel"
           [placeholder]="'register.fullNamePh' | translate"
           autocomplete="name"
-          [(ngModel)]="name"
-          required
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
         />
       </label>
+      @if ((name0.touched || submitted()) && !nameValid()) {
+        <p class="field-error">
+          @if (!name().trim()) {
+            {{ 'register.err.nameRequired' | translate }}
+          } @else {
+            {{ 'register.err.nameMin' | translate }}
+          }
+        </p>
+      }
 
+      <!-- Email -->
       <label class="field-label" for="email">{{ 'register.email' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(email0.touched || submitted()) && !emailValid()">
         <mat-icon class="field__icon">mail_outline</mat-icon>
         <input
           id="email"
           type="email"
           name="email"
+          #email0="ngModel"
           [placeholder]="'register.emailPh' | translate"
           autocomplete="email"
-          [(ngModel)]="email"
-          required
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
         />
       </label>
+      @if ((email0.touched || submitted()) && !emailValid()) {
+        <p class="field-error">
+          @if (!email().trim()) {
+            {{ 'register.err.emailRequired' | translate }}
+          } @else {
+            {{ 'register.err.emailInvalid' | translate }}
+          }
+        </p>
+      }
 
+      <!-- Mobile -->
       <label class="field-label" for="mobile">{{ 'register.mobile' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(mobile0.touched || submitted()) && !mobileValid()">
         <mat-icon class="field__icon">call</mat-icon>
         <input
           id="mobile"
           type="tel"
           name="mobile"
+          #mobile0="ngModel"
           [placeholder]="'register.mobilePh' | translate"
           autocomplete="tel"
-          [(ngModel)]="mobile"
-          required
+          [ngModel]="mobile()"
+          (ngModelChange)="mobile.set($event)"
         />
       </label>
+      @if ((mobile0.touched || submitted()) && !mobileValid()) {
+        <p class="field-error">
+          @if (!mobile().trim()) {
+            {{ 'register.err.mobileRequired' | translate }}
+          } @else {
+            {{ 'register.err.mobileInvalid' | translate }}
+          }
+        </p>
+      }
 
+      <!-- Birthday -->
       <label class="field-label" for="birthday">{{ 'register.birthday' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(birthday0.touched || submitted()) && !ageValid()">
         <mat-icon class="field__icon">cake</mat-icon>
-        <input id="birthday" type="date" name="birthday" [(ngModel)]="birthday" required />
+        <input
+          id="birthday"
+          type="date"
+          name="birthday"
+          #birthday0="ngModel"
+          [min]="minDob"
+          [max]="maxDob"
+          [ngModel]="birthday()"
+          (ngModelChange)="birthday.set($event)"
+        />
       </label>
+      @if ((birthday0.touched || submitted()) && !ageValid()) {
+        <p class="field-error">
+          @if (!birthday()) {
+            {{ 'register.err.birthdayRequired' | translate }}
+          } @else {
+            {{ 'register.err.birthdayAge' | translate }}
+          }
+        </p>
+      }
 
+      <!-- NIC / Passport -->
       <label class="field-label" for="nic">{{ 'register.nic' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(nic0.touched || submitted()) && !nicValid()">
         <mat-icon class="field__icon">badge</mat-icon>
         <input
           id="nic"
           type="text"
           name="nic"
+          #nic0="ngModel"
           [placeholder]="'register.nicPh' | translate"
-          [(ngModel)]="nic"
-          required
+          [ngModel]="nic()"
+          (ngModelChange)="nic.set($event)"
         />
       </label>
+      @if ((nic0.touched || submitted()) && !nicValid()) {
+        <p class="field-error">
+          @if (!nic().trim()) {
+            {{ 'register.err.nicRequired' | translate }}
+          } @else {
+            {{ 'register.err.nicInvalid' | translate }}
+          }
+        </p>
+      }
 
+      <!-- Password -->
       <label class="field-label" for="password">{{ 'register.password' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(password0.touched || submitted()) && !passwordStrong()">
         <mat-icon class="field__icon">lock_outline</mat-icon>
         <input
           id="password"
           [type]="showPassword() ? 'text' : 'password'"
           name="password"
+          #password0="ngModel"
           [placeholder]="'register.passwordPh' | translate"
           autocomplete="new-password"
-          [(ngModel)]="password"
-          required
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
         />
         <button
           type="button"
@@ -101,25 +166,62 @@
           <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
       </label>
+      @if ((password0.touched || submitted()) && !passwordStrong()) {
+        <p class="field-error">
+          @if (!password()) {
+            {{ 'register.err.passwordRequired' | translate }}
+          } @else {
+            {{ 'register.err.passwordWeak' | translate }}
+          }
+        </p>
+      }
 
+      <!-- Confirm password -->
       <label class="field-label" for="confirm">{{ 'register.confirm' | translate }}</label>
-      <label class="field">
+      <label class="field" [class.field--invalid]="(confirm0.touched || submitted()) && !passwordsMatch()">
         <mat-icon class="field__icon">lock_outline</mat-icon>
         <input
           id="confirm"
-          [type]="showPassword() ? 'text' : 'password'"
+          [type]="showConfirm() ? 'text' : 'password'"
           name="confirm"
+          #confirm0="ngModel"
           [placeholder]="'register.confirmPh' | translate"
           autocomplete="new-password"
-          [(ngModel)]="confirm"
-          required
+          [ngModel]="confirm()"
+          (ngModelChange)="confirm.set($event)"
         />
+        <button
+          type="button"
+          class="field__toggle"
+          (click)="toggleConfirm()"
+          [attr.aria-label]="showConfirm() ? 'Hide password' : 'Show password'"
+        >
+          <mat-icon>{{ showConfirm() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
       </label>
+      @if ((confirm0.touched || submitted()) && !passwordsMatch()) {
+        <p class="field-error">
+          @if (!confirm()) {
+            {{ 'register.err.confirmRequired' | translate }}
+          } @else {
+            {{ 'register.mismatch' | translate }}
+          }
+        </p>
+      }
 
+      <!-- Terms -->
       <label class="register__agree">
-        <input type="checkbox" name="agree" [(ngModel)]="agree" />
+        <input
+          type="checkbox"
+          name="agree"
+          [ngModel]="agree()"
+          (ngModelChange)="agree.set($event)"
+        />
         <span>{{ 'register.agree' | translate }}</span>
       </label>
+      @if (submitted() && !agree()) {
+        <p class="field-error field-error--agree">{{ 'register.mustAgree' | translate }}</p>
+      }
 
       @if (error()) {
         <p class="register__error" role="alert">
@@ -127,7 +229,7 @@
         </p>
       }
 
-      <button type="submit" class="register__submit" [disabled]="loading()">
+      <button type="submit" class="register__submit" [disabled]="loading() || !formValid()">
         @if (loading()) {
           …
         } @else {

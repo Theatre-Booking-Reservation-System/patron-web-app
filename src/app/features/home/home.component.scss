@@ -489,6 +489,40 @@
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
 }
+.show-card__early {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: rgba(43, 8, 13, 0.85);
+  color: var(--brand-gold);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  backdrop-filter: blur(2px);
+}
+.show-card__early mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+.show-card__members {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--brand-warning);
+  margin: 0.35rem 0 0;
+}
+.show-card__members mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
 .show-card__body {
   padding: 0.9rem 1rem 1.1rem;
 }
