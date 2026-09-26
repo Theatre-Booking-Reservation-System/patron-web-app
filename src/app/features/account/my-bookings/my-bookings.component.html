@@ -1,0 +1,69 @@
+<app-header />
+
+<main class="mb">
+  <header class="ph">
+    <div class="ph__inner">
+      <h1 class="ph__title">{{ 'mb.title' | translate }}</h1>
+      <p class="ph__lead">{{ 'mb.subtitle' | translate }}</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tabs__btn" [class.tabs__btn--active]="tab() === 'upcoming'" (click)="setTab('upcoming')">
+        {{ 'mb.upcoming' | translate }} <span class="tabs__count">{{ upcoming().length }}</span>
+      </button>
+      <button class="tabs__btn" [class.tabs__btn--active]="tab() === 'past'" (click)="setTab('past')">
+        {{ 'mb.past' | translate }} <span class="tabs__count">{{ past().length }}</span>
+      </button>
+    </div>
+
+    @if (visible().length) {
+      <div class="list">
+        @for (b of visible(); track b.bookingId) {
+          <article class="booking">
+            <div class="booking__media">
+              <img [src]="b.image" [alt]="b.production" />
+            </div>
+            <div class="booking__info">
+              <div class="booking__head">
+                <span class="booking__genre lang-chip">{{ b.genreKey | translate }}</span>
+                <span class="pill" [class]="'pill--' + (b.status === 'confirmed' ? 'success' : b.status === 'completed' ? 'info' : 'danger')">
+                  {{ statusKey(b.status) | translate }}
+                </span>
+              </div>
+              <h3 class="booking__name">{{ b.production }}</h3>
+              <p class="booking__row"><mat-icon>event</mat-icon> {{ b.dateTime }}</p>
+              <p class="booking__row"><mat-icon>place</mat-icon> {{ b.venue }}</p>
+              <p class="booking__row"><mat-icon>event_seat</mat-icon> {{ 'mb.seats' | translate }}: {{ b.seats }}</p>
+              <p class="booking__id">{{ 'mb.bookingId' | translate }}: <span class="mono">{{ b.bookingId }}</span></p>
+            </div>
+            <div class="booking__actions">
+              @if (b.status === 'confirmed') {
+                <a class="btn btn--solid" routerLink="/ticket">
+                  <mat-icon>confirmation_number</mat-icon> {{ 'mb.viewTicket' | translate }}
+                </a>
+                <button class="btn btn--ghost btn--danger">
+                  <mat-icon>close</mat-icon> {{ 'mb.cancel' | translate }}
+                </button>
+              } @else if (b.status === 'completed') {
+                <a class="btn btn--ghost" routerLink="/ticket">
+                  <mat-icon>confirmation_number</mat-icon> {{ 'mb.viewTicket' | translate }}
+                </a>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="empty">
+        <mat-icon>confirmation_number</mat-icon>
+        <p>{{ 'mb.empty' | translate }}</p>
+        <a class="btn btn--solid" routerLink="/productions">{{ 'mb.browse' | translate }}</a>
+      </div>
+    }
+  </div>
+</main>
+
+<app-footer />

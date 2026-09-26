@@ -1,0 +1,60 @@
+<app-header />
+
+<main class="visit">
+  <!-- Page header band -->
+  <header class="ph">
+    <div class="ph__inner">
+      <h1 class="ph__title">{{ 'visit.title' | translate }}</h1>
+      <p class="ph__lead">{{ 'visit.lead' | translate }}</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- Getting here + hours -->
+    <div class="info">
+      <div class="info-card">
+        <span class="info-card__icon"><mat-icon>directions</mat-icon></span>
+        <div>
+          <h3 class="info-card__title">{{ 'visit.gettingHere' | translate }}</h3>
+          <p class="info-card__text">{{ 'visit.gettingHereText' | translate }}</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <span class="info-card__icon"><mat-icon>schedule</mat-icon></span>
+        <div>
+          <h3 class="info-card__title">{{ 'visit.hours' | translate }}</h3>
+          <p class="info-card__text">{{ 'visit.hoursText' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Facilities -->
+    <h2 class="section-heading">{{ 'visit.facilities' | translate }}</h2>
+    <div class="facilities">
+      @for (f of facilities; track f.key) {
+        <div class="facility">
+          <span class="facility__icon"><mat-icon>{{ f.icon }}</mat-icon></span>
+          <span class="facility__label">{{ f.key | translate }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- FAQ -->
+    <h2 class="section-heading">{{ 'visit.faq' | translate }}</h2>
+    <div class="faq">
+      @for (item of faqs; track item.q; let i = $index) {
+        <div class="faq__item" [class.faq__item--open]="openFaq() === i">
+          <button class="faq__q" (click)="toggleFaq(i)" [attr.aria-expanded]="openFaq() === i">
+            <span>{{ item.q | translate }}</span>
+            <mat-icon>{{ openFaq() === i ? 'remove' : 'add' }}</mat-icon>
+          </button>
+          @if (openFaq() === i) {
+            <p class="faq__a">{{ item.a | translate }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</main>
+
+<app-footer />

@@ -1,0 +1,21 @@
+<app-header />
+
+<main class="legal">
+  <header class="ph">
+    <div class="ph__inner">
+      <h1 class="ph__title">{{ titleKey | translate }}</h1>
+      <p class="ph__meta">{{ 'legal.lastUpdated' | translate }}: {{ updated }}</p>
+    </div>
+  </header>
+
+  <div class="doc">
+    @for (s of sections; track s.heading) {
+      <section class="doc__section">
+        <h2 class="doc__heading">{{ s.heading }}</h2>
+        <p class="doc__body">{{ s.body }}</p>
+      </section>
+    }
+  </div>
+</main>
+
+<app-footer />

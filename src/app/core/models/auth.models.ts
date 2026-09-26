@@ -23,6 +23,8 @@ export interface PatronRegisterRequest {
   name: string;
   email: string;
   password: string;
+  /** NIC or passport number captured at registration. */
+  nic?: string;
 }
 
 export interface PatronRegisterResponse {

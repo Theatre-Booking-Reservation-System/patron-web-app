@@ -98,8 +98,13 @@
 .login__heading {
   font-size: 1.6rem;
   font-weight: 700;
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.35rem;
   color: var(--brand-text);
+}
+.login__sub {
+  font-size: 0.88rem;
+  color: var(--brand-muted);
+  margin: 0 0 1.5rem;
 }
 
 /* Field label + input */

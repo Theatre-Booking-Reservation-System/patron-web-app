@@ -1,0 +1,104 @@
+<app-header />
+
+<main class="pay">
+  @if (booking.draft().production; as p) {
+    <nav class="crumbs">
+      <a routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ 'book.step.payment' | translate }}</span>
+    </nav>
+
+    <h1 class="pay__title">{{ 'book.step.payment' | translate }}</h1>
+
+    <div class="pay__grid">
+      <!-- Payment form -->
+      <form class="pay__form" (submit)="pay($event)">
+        <section class="card">
+          <h3 class="section-title">{{ 'pay.method' | translate }}</h3>
+          <div class="methods">
+            <button type="button" class="method" [class.method--active]="method() === 'card'" (click)="setMethod('card')">
+              <mat-icon>credit_card</mat-icon> {{ 'pay.card' | translate }}
+            </button>
+            <button type="button" class="method" [class.method--active]="method() === 'wallet'" (click)="setMethod('wallet')">
+              <mat-icon>account_balance_wallet</mat-icon> {{ 'pay.wallet' | translate }}
+            </button>
+            <button type="button" class="method" [class.method--active]="method() === 'bank'" (click)="setMethod('bank')">
+              <mat-icon>account_balance</mat-icon> {{ 'pay.bank' | translate }}
+            </button>
+          </div>
+        </section>
+
+        @if (method() === 'card') {
+          <section class="card">
+            <h3 class="section-title">{{ 'pay.cardDetails' | translate }}</h3>
+            <div class="field">
+              <label for="cardno">{{ 'pay.cardNumber' | translate }}</label>
+              <input id="cardno" name="cardno" inputmode="numeric" placeholder="1234 5678 9012 3456" [(ngModel)]="cardNumber" required />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="exp">{{ 'pay.expiry' | translate }}</label>
+                <input id="exp" name="exp" placeholder="MM/YY" [(ngModel)]="expiry" required />
+              </div>
+              <div class="field">
+                <label for="cvv">{{ 'pay.cvv' | translate }}</label>
+                <input id="cvv" name="cvv" inputmode="numeric" placeholder="123" [(ngModel)]="cvv" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="cardname">{{ 'pay.cardName' | translate }}</label>
+              <input id="cardname" name="cardname" [(ngModel)]="cardName" required />
+            </div>
+            <label class="save">
+              <input type="checkbox" name="save" [(ngModel)]="saveCard" /> {{ 'pay.saveCard' | translate }}
+            </label>
+          </section>
+        }
+
+        <div class="pay__foot">
+          <a class="btn btn--ghost" [routerLink]="['/book', p.id, 'details']">
+            <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
+          </a>
+          <button type="submit" class="btn btn--solid" [disabled]="processing()">
+            <mat-icon>lock</mat-icon>
+            @if (processing()) { … } @else { {{ 'pay.payNow' | translate }} · LKR {{ booking.total().toLocaleString() }} }
+          </button>
+        </div>
+        <p class="pay__secure"><mat-icon>verified_user</mat-icon> {{ 'pay.secure' | translate }}</p>
+      </form>
+
+      <!-- Order summary -->
+      <aside class="card summary">
+        <h3 class="summary__title">{{ 'pay.orderSummary' | translate }}</h3>
+        <div class="summary__prod">
+          <img [src]="p.image" [alt]="p.name" />
+          <div>
+            <strong>{{ p.name }}</strong>
+            <span class="muted">{{ booking.draft().performance?.date }}, {{ booking.draft().performance?.clockLabel }}</span>
+          </div>
+        </div>
+        <div class="summary__chips">
+          @for (s of booking.draft().seats; track s.seatId) {
+            <span class="chip">{{ s.label }}</span>
+          }
+        </div>
+        <div class="summary__lines">
+          <div><span>{{ 'book.subtotal' | translate }}</span><span>LKR {{ booking.subtotal().toLocaleString() }}</span></div>
+          @if (booking.discount() > 0) {
+            <div class="summary__discount"><span>{{ 'book.discount' | translate }}</span><span>− LKR {{ booking.discount().toLocaleString() }}</span></div>
+          }
+          <div><span>{{ 'book.bookingFee' | translate }}</span><span>LKR {{ booking.bookingFee().toLocaleString() }}</span></div>
+        </div>
+        <div class="summary__total">
+          <span>{{ 'book.total' | translate }}</span>
+          <strong>LKR {{ booking.total().toLocaleString() }}</strong>
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <p class="muted pay__missing">{{ 'prod.empty' | translate }}</p>
+    <a class="btn btn--solid" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  }
+</main>
+
+<app-footer />

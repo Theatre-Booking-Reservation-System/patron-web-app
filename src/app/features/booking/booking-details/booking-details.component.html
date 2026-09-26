@@ -1,0 +1,123 @@
+<app-header />
+
+<main class="bd">
+  @if (booking.draft().production; as p) {
+    <nav class="crumbs">
+      <a routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ 'book.step.details' | translate }}</span>
+    </nav>
+
+    <h1 class="bd__title">{{ 'book.step.details' | translate }}</h1>
+
+    <div class="bd__grid">
+      <!-- Form -->
+      <form class="bd__form" (submit)="onSubmit($event)">
+        <section class="card">
+          <h3 class="section-title">{{ 'bd.personalInfo' | translate }}</h3>
+
+          <div class="field">
+            <label for="fn">{{ 'bd.fullName' | translate }}</label>
+            <input id="fn" name="fn" type="text" [(ngModel)]="fullName" required />
+          </div>
+          <div class="field">
+            <label for="em">{{ 'bd.email' | translate }}</label>
+            <input id="em" name="em" type="email" [(ngModel)]="email" required />
+          </div>
+          <div class="field">
+            <label for="ph">{{ 'bd.phone' | translate }}</label>
+            <input id="ph" name="ph" type="tel" [(ngModel)]="phone" required />
+          </div>
+        </section>
+
+        <section class="card">
+          <h3 class="section-title">{{ 'bd.additionalInfo' | translate }}</h3>
+
+          <div class="field">
+            <label for="tt">{{ 'bd.ticketType' | translate }}</label>
+            <select
+              id="tt"
+              name="tt"
+              [ngModel]="concession"
+              (ngModelChange)="onConcessionChange($event)"
+            >
+              @for (c of concessions; track c.type) {
+                <option [value]="c.type">{{ c.labelKey | translate }}</option>
+              }
+            </select>
+          </div>
+
+          @if (requiresId) {
+            <div class="field field--flag">
+              <label for="idn">{{ 'bd.idNumber' | translate }}</label>
+              <input id="idn" name="idn" type="text" [(ngModel)]="idNumber" required />
+              <p class="field__hint"><mat-icon>info</mat-icon> {{ 'bd.idHint' | translate }}</p>
+            </div>
+          }
+
+          <div class="field">
+            <label for="sr">{{ 'bd.specialRequests' | translate }}</label>
+            <textarea
+              id="sr"
+              name="sr"
+              rows="3"
+              [placeholder]="'bd.specialPh' | translate"
+              [(ngModel)]="specialRequests"
+            ></textarea>
+          </div>
+        </section>
+
+        <div class="bd__foot">
+          <a class="btn btn--ghost" [routerLink]="['/book', p.id, 'seats']">
+            <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
+          </a>
+          <button type="submit" class="btn btn--solid">
+            {{ 'bd.proceedPayment' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+
+      <!-- Summary -->
+      <aside class="card summary">
+        <h3 class="summary__title">{{ 'book.summary' | translate }}</h3>
+        <div class="summary__prod">
+          <img [src]="p.image" [alt]="p.name" />
+          <div>
+            <strong>{{ p.name }}</strong>
+            <span class="muted">{{ booking.draft().performance?.date }}, {{ booking.draft().performance?.clockLabel }}</span>
+          </div>
+        </div>
+
+        <div class="summary__seats">
+          <span class="muted">{{ 'seats.section' | translate }}</span>
+          <span>{{ booking.draft().seats.length }} × {{ 'seats.selected' | translate }}</span>
+        </div>
+        <div class="summary__chips">
+          @for (s of booking.draft().seats; track s.seatId) {
+            <span class="chip">{{ s.label }}</span>
+          }
+        </div>
+
+        <div class="summary__lines">
+          <div><span>{{ 'book.subtotal' | translate }}</span><span>LKR {{ booking.subtotal().toLocaleString() }}</span></div>
+          @if (booking.discount() > 0) {
+            <div class="summary__discount">
+              <span>{{ 'book.discount' | translate }}</span>
+              <span>− LKR {{ booking.discount().toLocaleString() }}</span>
+            </div>
+          }
+          <div><span>{{ 'book.bookingFee' | translate }}</span><span>LKR {{ booking.bookingFee().toLocaleString() }}</span></div>
+        </div>
+        <div class="summary__total">
+          <span>{{ 'book.total' | translate }}</span>
+          <strong>LKR {{ booking.total().toLocaleString() }}</strong>
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <p class="muted bd__missing">{{ 'prod.empty' | translate }}</p>
+    <a class="btn btn--solid" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  }
+</main>
+
+<app-footer />

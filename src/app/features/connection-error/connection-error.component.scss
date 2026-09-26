@@ -1,0 +1,131 @@
+:host {
+  display: block;
+}
+
+.ce {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+  background: var(--brand-bg);
+}
+
+.ce__card {
+  width: min(520px, 100%);
+  text-align: center;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 18px;
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.ce__badge {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.25rem;
+  border-radius: 18px;
+  background: var(--brand-danger-bg);
+  color: var(--brand-danger);
+  display: grid;
+  place-items: center;
+}
+.ce__badge mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+}
+
+.ce__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--brand-text);
+}
+.ce__msg {
+  color: var(--brand-muted);
+  font-size: 0.92rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+.ce__hints {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  text-align: left;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.ce__hints li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.86rem;
+  color: var(--brand-text-soft);
+}
+.ce__hints mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--brand-maroon);
+  flex: none;
+}
+
+.ce__still {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brand-danger);
+  margin: 0 0 1rem;
+}
+.ce__still mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+
+.ce__actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.7rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.btn--primary {
+  background: var(--brand-maroon);
+  color: #fff;
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--brand-maroon-dark);
+}
+
+.ce__brand {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--brand-muted);
+  margin: 0;
+}

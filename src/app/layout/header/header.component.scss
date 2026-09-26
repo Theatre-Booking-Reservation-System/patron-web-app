@@ -206,6 +206,107 @@
   background: var(--brand-maroon-dark);
 }
 
+/* User menu */
+.header__user {
+  position: relative;
+}
+.header__avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.15rem 0.3rem 0.15rem 0.15rem;
+  border-radius: 999px;
+}
+.header__avatar:hover {
+  background: var(--brand-maroon-soft);
+}
+.header__avatar-initials {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--brand-maroon);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.header__avatar-initials--lg {
+  width: 44px;
+  height: 44px;
+  font-size: 0.95rem;
+}
+.header__avatar .header__lang-caret {
+  color: var(--brand-muted);
+}
+
+.header__user-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 230px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(40, 20, 25, 0.15);
+  padding: 0.4rem;
+  z-index: 20;
+}
+.header__user-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border-bottom: 1px solid var(--brand-border);
+  margin-bottom: 0.35rem;
+}
+.header__user-head strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--brand-text);
+}
+.header__user-head small {
+  font-size: 0.78rem;
+  color: var(--brand-muted);
+}
+.header__user-menu a,
+.header__logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.65rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--brand-text);
+  cursor: pointer;
+  text-align: left;
+}
+.header__user-menu a:hover,
+.header__logout:hover {
+  background: var(--brand-surface-2);
+}
+.header__user-menu a mat-icon,
+.header__logout mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--brand-maroon);
+}
+.header__logout {
+  color: var(--brand-danger);
+  border-top: 1px solid var(--brand-border);
+  margin-top: 0.35rem;
+}
+.header__logout mat-icon {
+  color: var(--brand-danger);
+}
+
 .header__burger {
   display: none;
 }

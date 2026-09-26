@@ -1,0 +1,91 @@
+<app-header />
+
+<main class="perf">
+  @if (booking.draft().production; as p) {
+    <nav class="crumbs">
+      <a routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <a [routerLink]="['/productions', p.id]">{{ p.name }}</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ 'book.step.performance' | translate }}</span>
+    </nav>
+
+    <h1 class="perf__title">{{ 'book.step.performance' | translate }}</h1>
+
+    <div class="perf__grid">
+      <!-- Calendar -->
+      <section class="card cal">
+        <h3 class="cal__title">{{ 'perf.selectDate' | translate }}</h3>
+        <div class="cal__month">{{ monthLabel }}</div>
+        <div class="cal__weekdays">
+          @for (w of weekdays; track w) {
+            <span>{{ w }}</span>
+          }
+        </div>
+        <div class="cal__days">
+          @for (c of calendar(); track c.iso) {
+            @if (c.day === 0) {
+              <span class="cal__pad"></span>
+            } @else {
+              <button
+                class="cal__day"
+                [class.cal__day--shows]="c.hasShows"
+                [class.cal__day--poya]="c.poya"
+                [class.cal__day--active]="selectedDate() === c.iso"
+                [disabled]="!c.hasShows"
+                (click)="selectDate(c)"
+                [attr.title]="c.poya ? ('perf.poyaNote' | translate) : null"
+              >
+                {{ c.day }}
+              </button>
+            }
+          }
+        </div>
+        <p class="cal__note"><mat-icon>info</mat-icon> {{ 'perf.poyaNote' | translate }}</p>
+      </section>
+
+      <!-- Shows for the selected date -->
+      <section class="card shows">
+        <h3 class="shows__title">{{ 'perf.availableShows' | translate }}</h3>
+        @if (showsForSelected().length) {
+          <ul class="shows__list">
+            @for (s of showsForSelected(); track s.id) {
+              <li>
+                <button
+                  class="show"
+                  [class.show--active]="selectedPerf()?.id === s.id"
+                  (click)="selectPerf(s)"
+                >
+                  <span class="show__time">
+                    <mat-icon>{{ s.time === 'matinee' ? 'wb_sunny' : 'nights_stay' }}</mat-icon>
+                    {{ s.clockLabel }}
+                    <small>{{ (s.time === 'matinee' ? 'perf.matinee' : 'perf.evening') | translate }}</small>
+                  </span>
+                  <span class="show__avail" [class]="'show__avail--' + s.availability">
+                    {{ ('perf.' + s.availability) | translate }}
+                  </span>
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="shows__empty muted">{{ 'perf.selectDate' | translate }}</p>
+        }
+      </section>
+    </div>
+
+    <div class="perf__foot">
+      <a class="btn btn--ghost" [routerLink]="['/productions', p.id]">
+        <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
+      </a>
+      <button class="btn btn--solid" [disabled]="!selectedPerf()" (click)="continue()">
+        {{ 'perf.continueSeats' | translate }} <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  } @else {
+    <p class="muted perf__missing">{{ 'prod.empty' | translate }}</p>
+    <a class="btn btn--solid" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  }
+</main>
+
+<app-footer />

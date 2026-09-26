@@ -1,8 +1,9 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { LanguageService } from '../../core/services/language.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Lang } from '../../core/i18n/translations';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
@@ -16,16 +17,30 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 export class HeaderComponent {
   private readonly language = inject(LanguageService);
   private readonly themeService = inject(ThemeService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly languages = this.language.languages;
   readonly activeLang = this.language.lang;
   readonly theme = this.themeService.theme;
 
+  readonly isAuthenticated = this.auth.isAuthenticated;
+  readonly user = this.auth.user;
+
   readonly langOpen = signal(false);
   readonly menuOpen = signal(false);
+  readonly userOpen = signal(false);
 
   get activeShort(): string {
     return this.languages.find((l) => l.code === this.activeLang())?.short ?? 'EN';
+  }
+
+  /** Initials for the avatar, e.g. "Sarasi Sumiyana" -> "SS". */
+  get initials(): string {
+    const name = this.user()?.name?.trim();
+    if (!name) return 'U';
+    const parts = name.split(/\s+/);
+    return (parts[0][0] + (parts[1]?.[0] ?? '')).toUpperCase();
   }
 
   toggleLang(): void {
@@ -45,12 +60,25 @@ export class HeaderComponent {
     this.themeService.toggle();
   }
 
-  // Close the language dropdown when clicking outside of it.
+  toggleUser(): void {
+    this.userOpen.update((v) => !v);
+  }
+
+  logout(): void {
+    this.userOpen.set(false);
+    this.auth.logout();
+    this.router.navigateByUrl('/');
+  }
+
+  // Close dropdowns when clicking outside of them.
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     if (!target.closest('.header__lang')) {
       this.langOpen.set(false);
+    }
+    if (!target.closest('.header__user')) {
+      this.userOpen.set(false);
     }
   }
 }

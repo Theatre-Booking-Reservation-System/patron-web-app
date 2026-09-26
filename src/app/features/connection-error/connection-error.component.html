@@ -1,0 +1,29 @@
+<main class="ce">
+  <div class="ce__card">
+    <div class="ce__badge">
+      <mat-icon>cloud_off</mat-icon>
+    </div>
+
+    <h1 class="ce__title">{{ 'conn.title' | translate }}</h1>
+    <p class="ce__msg">{{ 'conn.message' | translate }}</p>
+
+    <ul class="ce__hints">
+      <li><mat-icon>wifi</mat-icon> {{ 'conn.hint1' | translate }}</li>
+      <li><mat-icon>schedule</mat-icon> {{ 'conn.hint2' | translate }}</li>
+      <li><mat-icon>refresh</mat-icon> {{ 'conn.hint3' | translate }}</li>
+    </ul>
+
+    @if (stillOffline()) {
+      <p class="ce__still"><mat-icon>error_outline</mat-icon> {{ 'conn.still' | translate }}</p>
+    }
+
+    <div class="ce__actions">
+      <button class="btn btn--primary" (click)="tryAgain()" [disabled]="retrying()">
+        <mat-icon>{{ retrying() ? 'hourglass_empty' : 'refresh' }}</mat-icon>
+        {{ (retrying() ? 'conn.retrying' : 'conn.tryAgain') | translate }}
+      </button>
+    </div>
+
+    <p class="ce__brand">SAPUMAL THEATRE · ART BRINGS US TOGETHER</p>
+  </div>
+</main>

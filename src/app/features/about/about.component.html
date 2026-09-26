@@ -1,0 +1,55 @@
+<app-header />
+
+<main class="about">
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="about-hero__overlay">
+      <div class="about-hero__content">
+        <h1 class="about-hero__title">{{ 'about.title' | translate }}</h1>
+        <p class="about-hero__lead">{{ 'about.lead' | translate }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story + Mission -->
+  <section class="wrap split">
+    <article class="split__col">
+      <span class="eyebrow"><span></span> {{ 'about.storyTitle' | translate }}</span>
+      <h2 class="split__title">{{ 'about.storyTitle' | translate }}</h2>
+      <p class="split__text">{{ 'about.story' | translate }}</p>
+    </article>
+    <article class="split__col split__col--card">
+      <span class="eyebrow"><span></span> {{ 'about.missionTitle' | translate }}</span>
+      <h2 class="split__title">{{ 'about.missionTitle' | translate }}</h2>
+      <p class="split__text">{{ 'about.mission' | translate }}</p>
+    </article>
+  </section>
+
+  <!-- Stats band -->
+  <section class="stats">
+    <div class="stats__inner">
+      @for (s of stats; track s.labelKey) {
+        <div class="stats__item">
+          <span class="stats__value">{{ s.value }}</span>
+          <span class="stats__label">{{ s.labelKey | translate }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="wrap values">
+    <h2 class="section-heading">{{ 'about.valuesTitle' | translate }}</h2>
+    <div class="values__grid">
+      @for (v of values; track v.titleKey) {
+        <div class="value-card">
+          <span class="value-card__icon"><mat-icon>{{ v.icon }}</mat-icon></span>
+          <h3 class="value-card__title">{{ v.titleKey | translate }}</h3>
+          <p class="value-card__text">{{ v.textKey | translate }}</p>
+        </div>
+      }
+    </div>
+  </section>
+</main>
+
+<app-footer />
