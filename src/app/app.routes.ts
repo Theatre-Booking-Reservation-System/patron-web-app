@@ -118,5 +118,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/legal/support.component').then((m) => m.SupportComponent),
   },
 
+  // Standalone connection-error page (full-screen, no header/footer chrome).
+  {
+    path: 'connection-error',
+    loadComponent: () =>
+      import('./features/connection-error/connection-error.component').then(
+        (m) => m.ConnectionErrorComponent,
+      ),
+  },
+
   { path: '**', redirectTo: '' },
 ];
