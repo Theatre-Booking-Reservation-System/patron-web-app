@@ -1,8 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
+import { LoyaltyService } from '../../../core/services/loyalty.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
@@ -14,7 +15,9 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 })
 export class LoginComponent {
   private readonly auth = inject(AuthService);
+  private readonly loyalty = inject(LoyaltyService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   email = '';
   password = '';
@@ -34,8 +37,20 @@ export class LoginComponent {
 
     this.auth.login({ email: this.email.trim(), password: this.password }).subscribe({
       next: () => {
-        this.loading.set(false);
-        this.router.navigateByUrl('/');
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+        // Refresh loyalty membership from the backend (GET /patron/{id}) so the
+        // returned page reflects loyaltyHolder, then navigate back. Navigation
+        // proceeds regardless of whether the sync succeeds.
+        this.loyalty.syncMembership().subscribe({
+          next: () => {
+            this.loading.set(false);
+            this.router.navigateByUrl(returnUrl);
+          },
+          error: () => {
+            this.loading.set(false);
+            this.router.navigateByUrl(returnUrl);
+          },
+        });
       },
       error: (err) => {
         this.loading.set(false);

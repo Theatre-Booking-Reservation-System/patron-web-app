@@ -250,3 +250,114 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Loyalty card */
+.loyalty-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #fff7e6 0%, #fdeccd 100%);
+  border: 1px solid #e7c987;
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  margin: 1.5rem 0 2rem;
+  box-shadow: var(--shadow-card);
+}
+.loyalty-card--member {
+  background: linear-gradient(135deg, #f2f8f0 0%, #e3f1e0 100%);
+  border-color: #b9dcb0;
+}
+.loyalty-card__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--brand-maroon);
+  color: #f5d98a;
+}
+.loyalty-card__icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+.loyalty-card__body {
+  flex: 1;
+  min-width: 0;
+}
+.loyalty-card__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--brand-text);
+  margin: 0 0 0.25rem;
+}
+.loyalty-card__text {
+  font-size: 0.88rem;
+  color: var(--brand-muted);
+  margin: 0 0 0.85rem;
+  line-height: 1.45;
+}
+.loyalty-card__cond-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--brand-text-soft);
+  margin: 0 0 0.4rem;
+}
+.loyalty-card__conds {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.loyalty-card__conds li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  color: var(--brand-text);
+  line-height: 1.4;
+}
+.loyalty-card__conds mat-icon {
+  flex: none;
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+  margin-top: 0.1rem;
+  color: var(--brand-maroon);
+}
+.loyalty-card--member .loyalty-card__conds mat-icon {
+  color: #2f7d32;
+}
+.loyalty-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.loyalty-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand-maroon);
+}
+.loyalty-card__link:hover {
+  text-decoration: underline;
+}
+.loyalty-card__link mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+
+@media (max-width: 560px) {
+  .loyalty-card {
+    flex-direction: column;
+  }
+}

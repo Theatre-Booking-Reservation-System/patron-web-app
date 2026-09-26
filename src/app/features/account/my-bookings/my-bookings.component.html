@@ -9,6 +9,41 @@
   </header>
 
   <div class="wrap">
+    <!-- Loyalty program card -->
+    @if (isMember()) {
+      <section class="loyalty-card loyalty-card--member">
+        <span class="loyalty-card__icon"><mat-icon>workspace_premium</mat-icon></span>
+        <div class="loyalty-card__body">
+          <div class="loyalty-card__headrow">
+            <h2 class="loyalty-card__title">{{ 'loyalty.enrolled' | translate }}</h2>
+            <span class="loyalty-card__badge"><mat-icon>verified</mat-icon> {{ 'loyalty.memberBadge' | translate }}</span>
+          </div>
+          <p class="loyalty-card__text">{{ 'loyalty.card.memberText' | translate }}</p>
+        </div>
+        <a class="btn btn--ghost" routerLink="/loyalty">{{ 'loyalty.card.learnMore' | translate }}</a>
+      </section>
+    } @else {
+      <section class="loyalty-card">
+        <span class="loyalty-card__icon"><mat-icon>workspace_premium</mat-icon></span>
+        <div class="loyalty-card__body">
+          <h2 class="loyalty-card__title">{{ 'loyalty.card.title' | translate }}</h2>
+          <p class="loyalty-card__text">{{ 'loyalty.card.text' | translate }}</p>
+          <ul class="loyalty-card__benefits">
+            @for (h of loyaltyHighlights; track h.textKey) {
+              <li><mat-icon>{{ h.icon }}</mat-icon> {{ h.textKey | translate }}</li>
+            }
+          </ul>
+        </div>
+        <div class="loyalty-card__actions">
+          <button class="btn btn--solid" (click)="enrollLoyalty()" [disabled]="enrolling()">
+            <mat-icon>workspace_premium</mat-icon>
+            {{ (enrolling() ? 'common.loading' : 'loyalty.enroll') | translate }}
+          </button>
+          <a class="btn btn--ghost" routerLink="/loyalty">{{ 'loyalty.card.learnMore' | translate }}</a>
+        </div>
+      </section>
+    }
+
     <!-- Tabs -->
     <div class="tabs">
       <button class="tabs__btn" [class.tabs__btn--active]="tab() === 'upcoming'" (click)="setTab('upcoming')">

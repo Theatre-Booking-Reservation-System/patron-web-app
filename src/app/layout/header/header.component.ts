@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LanguageService } from '../../core/services/language.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { AuthService } from '../../core/services/auth.service';
+import { LoyaltyService } from '../../core/services/loyalty.service';
 import { Lang } from '../../core/i18n/translations';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
@@ -18,6 +19,7 @@ export class HeaderComponent {
   private readonly language = inject(LanguageService);
   private readonly themeService = inject(ThemeService);
   private readonly auth = inject(AuthService);
+  private readonly loyalty = inject(LoyaltyService);
   private readonly router = inject(Router);
 
   readonly languages = this.language.languages;
@@ -66,7 +68,10 @@ export class HeaderComponent {
 
   logout(): void {
     this.userOpen.set(false);
+    // Clear the full session: auth token/user and cached loyalty membership.
     this.auth.logout();
+    this.loyalty.cancel();
+    // Return to a public page (never leave the user on a guarded route).
     this.router.navigateByUrl('/');
   }
 

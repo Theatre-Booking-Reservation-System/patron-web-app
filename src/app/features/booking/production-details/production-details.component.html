@@ -83,6 +83,32 @@
           }
         </ul>
         <button class="dates__cta" (click)="bookTickets()">{{ 'action.bookTickets' | translate }}</button>
+
+        <!-- Loyalty: members see a note; everyone else sees the enrol card -->
+        @if (isMember()) {
+          <div class="loyalty-note">
+            <mat-icon>verified</mat-icon>
+            <span>{{ 'loyalty.card.memberText' | translate }}</span>
+          </div>
+        } @else {
+          <div class="loyalty-enrol">
+            <div class="loyalty-enrol__head">
+              <mat-icon>workspace_premium</mat-icon>
+              <strong>{{ 'loyalty.card.title' | translate }}</strong>
+            </div>
+            <p class="loyalty-enrol__cond-title">{{ 'loyalty.cond.title' | translate }}</p>
+            <ul class="loyalty-enrol__conds">
+              @for (c of loyaltyConditions; track c) {
+                <li><mat-icon>check</mat-icon> {{ c | translate }}</li>
+              }
+            </ul>
+            <button class="loyalty-enrol__btn" (click)="enrollLoyalty()" [disabled]="enrolling()">
+              <mat-icon>workspace_premium</mat-icon>
+              {{ (enrolling() ? 'common.loading' : 'loyalty.enroll') | translate }}
+            </button>
+            <a class="loyalty-enrol__link" routerLink="/loyalty">{{ 'loyalty.card.learnMore' | translate }}</a>
+          </div>
+        }
       </aside>
     </div>
   </main>

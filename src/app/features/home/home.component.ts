@@ -7,6 +7,8 @@ import { FooterComponent } from '../../layout/footer/footer.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationKey } from '../../core/i18n/translations';
 import { AuthService } from '../../core/services/auth.service';
+import { LoyaltyService } from '../../core/services/loyalty.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 interface ShowCard {
   id: string;
@@ -15,6 +17,8 @@ interface ShowCard {
   dateRange: string;
   venue: string;
   image: string;
+  /** True while the production is in the members-only pre-release window. */
+  earlyAccess?: boolean;
 }
 
 interface UpcomingBooking {
@@ -41,6 +45,8 @@ interface HeroSlide {
 export class HomeComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly loyalty = inject(LoyaltyService);
+  private readonly confirm = inject(ConfirmService);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
 
@@ -212,6 +218,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     },
   ];
 
+  // Upcoming shows are still in the members-only early-access window.
   readonly upcoming: ShowCard[] = [
     {
       id: 'nava-rathri',
@@ -220,6 +227,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       dateRange: '01 Sep – 15 Sep 2025',
       venue: 'Main Theatre',
       image: 'assets/curtain.png',
+      earlyAccess: true,
     },
     {
       id: 'yathra-gruwa',
@@ -228,6 +236,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       dateRange: '10 Jun – 20 Jun 2025',
       venue: 'Main Theatre',
       image: 'assets/loginBg.png',
+      earlyAccess: true,
     },
     {
       id: 'nrithya-sandhya',
@@ -236,6 +245,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       dateRange: '20 Sep – 12 Oct 2025',
       venue: 'Main Theatre',
       image: 'assets/bg1.jpeg',
+      earlyAccess: true,
     },
     {
       id: 'raja-saha-ranaviru',
@@ -244,6 +254,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       dateRange: '18 Oct – 05 Nov 2025',
       venue: 'Main Theatre',
       image: 'assets/curtain.png',
+      earlyAccess: true,
     },
   ];
+
+  readonly isLoyaltyMember = this.loyalty.isMember;
+
+  /**
+   * Cards always navigate to the details page (everyone can view details).
+   * The booking gate itself lives on the details page's "Book" action.
+   * Here we only surface the "members book early" hint on the card.
+   */
+  membersOnly(card: ShowCard): boolean {
+    return !!card.earlyAccess && !this.isLoyaltyMember();
+  }
 }

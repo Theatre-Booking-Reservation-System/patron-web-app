@@ -5,8 +5,11 @@ import { HeaderComponent } from '../../../layout/header/header.component';
 import { FooterComponent } from '../../../layout/footer/footer.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { BookingStateService } from '../../../core/services/booking-state.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { LoyaltyService } from '../../../core/services/loyalty.service';
 import { isPoya, performancesFor } from '../../../core/booking/catalogue.data';
 import { Performance } from '../../../core/models/booking.models';
+import { TranslationKey } from '../../../core/i18n/translations';
 
 interface DayCell {
   day: number;
@@ -24,7 +27,18 @@ interface DayCell {
 })
 export class SelectPerformanceComponent {
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+  private readonly loyalty = inject(LoyaltyService);
   readonly booking = inject(BookingStateService);
+
+  // Loyalty card state (only shown when signed in).
+  readonly isAuthenticated = this.auth.isAuthenticated;
+  readonly isMember = this.loyalty.isMember;
+  readonly loyaltyConditions: TranslationKey[] = [
+    'loyalty.cond1',
+    'loyalty.cond2',
+    'loyalty.cond3',
+  ];
 
   // Fixed to May 2025 to line up with the sample productions.
   readonly year = 2025;
@@ -71,6 +85,26 @@ export class SelectPerformanceComponent {
 
   selectPerf(p: Performance): void {
     this.selectedPerf.set(p);
+  }
+
+  /**
+   * Enrol in the loyalty programme. If not signed in, redirect to login and
+   * return to this page afterwards via returnUrl.
+   */
+  readonly enrolling = signal(false);
+
+  enrollLoyalty(): void {
+    if (!this.auth.isAuthenticated()) {
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+    this.enrolling.set(true);
+    this.loyalty.enroll().subscribe({
+      next: () => this.enrolling.set(false),
+      error: () => this.enrolling.set(false),
+    });
   }
 
   continue(): void {

@@ -5,8 +5,12 @@ import { HeaderComponent } from '../../../layout/header/header.component';
 import { FooterComponent } from '../../../layout/footer/footer.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { BookingStateService } from '../../../core/services/booking-state.service';
+import { LoyaltyService } from '../../../core/services/loyalty.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { productionById } from '../../../core/booking/catalogue.data';
 import { Production } from '../../../core/models/booking.models';
+import { TranslationKey } from '../../../core/i18n/translations';
 
 type Tab = 'about' | 'cast';
 
@@ -21,9 +25,22 @@ export class ProductionDetailsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly booking = inject(BookingStateService);
+  private readonly loyalty = inject(LoyaltyService);
+  private readonly auth = inject(AuthService);
+  private readonly confirm = inject(ConfirmService);
 
   readonly production = signal<Production | undefined>(undefined);
+  readonly isMember = this.loyalty.isMember;
+  readonly isAuthenticated = this.auth.isAuthenticated;
+  readonly enrolling = signal(false);
   readonly tab = signal<Tab>('about');
+
+  // Loyalty conditions shown in the enrol banner.
+  readonly loyaltyConditions: TranslationKey[] = [
+    'loyalty.cond1',
+    'loyalty.cond2',
+    'loyalty.cond3',
+  ];
 
   readonly cast = [
     { role: 'Director', name: 'Nimal Perera' },
@@ -48,9 +65,49 @@ export class ProductionDetailsComponent {
     this.tab.set(t);
   }
 
+  /**
+   * Enrol in the loyalty programme. If the user isn't signed in, send them to
+   * login and return to this page afterwards via returnUrl.
+   */
+  enrollLoyalty(): void {
+    if (!this.auth.isAuthenticated()) {
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+    this.enrolling.set(true);
+    this.loyalty.enroll().subscribe({
+      next: () => this.enrolling.set(false),
+      error: () => this.enrolling.set(false),
+    });
+  }
+
   bookTickets(): void {
     const p = this.production();
     if (!p) return;
+
+    // Early-access productions can only be booked by loyalty members before release.
+    if (p.earlyAccess && !this.loyalty.isMember()) {
+      this.confirm.open({
+        icon: 'workspace_premium',
+        title: 'earlyModal.title',
+        message: 'earlyModal.text',
+        confirmText: 'earlyModal.enroll',
+        cancelText: 'earlyModal.cancel',
+        onConfirm: () => {
+          this.loyalty.enroll().subscribe({
+            next: () => this.proceed(p),
+          });
+        },
+      });
+      return;
+    }
+
+    this.proceed(p);
+  }
+
+  private proceed(p: Production): void {
     this.booking.setProduction(p);
     this.router.navigate(['/book', p.id, 'performance']);
   }

@@ -244,3 +244,29 @@
     position: static;
   }
 }
+
+/* Auto-selected ticket type (read-only) */
+.ticket-type {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
+  background: var(--brand-surface-2);
+}
+.ticket-type__label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--brand-text);
+}
+.ticket-type__badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2f7d32;
+  background: rgba(47, 125, 50, 0.12);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}

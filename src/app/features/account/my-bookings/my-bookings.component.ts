@@ -1,10 +1,11 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { HeaderComponent } from '../../../layout/header/header.component';
 import { FooterComponent } from '../../../layout/footer/footer.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { TranslationKey } from '../../../core/i18n/translations';
+import { LoyaltyService } from '../../../core/services/loyalty.service';
 
 type BookingStatus = 'confirmed' | 'completed' | 'cancelled';
 
@@ -27,7 +28,26 @@ interface Booking {
   styleUrl: './my-bookings.component.scss',
 })
 export class MyBookingsComponent {
+  private readonly loyalty = inject(LoyaltyService);
+
   readonly tab = signal<'upcoming' | 'past'>('upcoming');
+
+  // Loyalty program state for the dashboard promo card.
+  readonly isMember = this.loyalty.isMember;
+  readonly loyaltyHighlights: { icon: string; textKey: TranslationKey }[] = [
+    { icon: 'sell', textKey: 'loyalty.benefit1Title' },
+    { icon: 'schedule', textKey: 'loyalty.benefit2Title' },
+  ];
+
+  readonly enrolling = signal(false);
+
+  enrollLoyalty(): void {
+    this.enrolling.set(true);
+    this.loyalty.enroll().subscribe({
+      next: () => this.enrolling.set(false),
+      error: () => this.enrolling.set(false),
+    });
+  }
 
   // Placeholder bookings until the booking service is wired in.
   private readonly all: Booking[] = [

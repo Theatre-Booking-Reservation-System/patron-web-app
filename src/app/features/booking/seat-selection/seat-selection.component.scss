@@ -127,10 +127,6 @@
   transform: translateY(-1px);
   border-color: var(--brand-maroon);
 }
-.seat--premium {
-  background: var(--brand-gold-soft);
-  border-color: var(--brand-gold);
-}
 .seat--selected {
   background: var(--brand-maroon);
   border-color: var(--brand-maroon);
@@ -139,6 +135,19 @@
   background: var(--brand-border);
   cursor: not-allowed;
   opacity: 0.6;
+}
+.seat--unavailable {
+  cursor: not-allowed;
+  opacity: 0.9;
+  border-style: dashed;
+  border-color: var(--brand-muted);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--brand-surface-2),
+    var(--brand-surface-2) 3px,
+    var(--brand-border) 3px,
+    var(--brand-border) 6px
+  );
 }
 
 /* Legend */
@@ -175,9 +184,16 @@
 .dot--booked {
   background: var(--brand-border);
 }
-.dot--premium {
-  background: var(--brand-gold-soft);
-  border-color: var(--brand-gold);
+.dot--unavailable {
+  border-style: dashed;
+  border-color: var(--brand-muted);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--brand-surface-2),
+    var(--brand-surface-2) 2px,
+    var(--brand-border) 2px,
+    var(--brand-border) 4px
+  );
 }
 
 /* Summary */
@@ -222,12 +238,33 @@
 }
 .picks li {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.65rem;
   border: 1px solid var(--brand-border);
   border-radius: 10px;
+}
+.picks__remove {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--brand-muted);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.picks__remove:hover {
+  background: var(--brand-danger-bg);
+  color: var(--brand-danger);
+}
+.picks__remove mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 .picks__seat {
   display: inline-grid;

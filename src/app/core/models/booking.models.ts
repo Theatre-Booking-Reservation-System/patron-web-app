@@ -22,7 +22,7 @@ export interface PriceTier {
   evening: number;
 }
 
-export type SeatStatus = 'available' | 'selected' | 'booked';
+export type SeatStatus = 'available' | 'selected' | 'booked' | 'unavailable';
 
 export interface Seat {
   id: string; // e.g. "S-AA-1"
@@ -55,6 +55,8 @@ export interface Production {
   reviews: number;
   synopsis: string;
   image: string;
+  /** True while in the members-only pre-release window (loyalty can book early). */
+  earlyAccess?: boolean;
 }
 
 /** Concession types — non-compound; the single best is applied. */

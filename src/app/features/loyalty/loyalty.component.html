@@ -1,0 +1,52 @@
+<app-header />
+
+<main class="loyalty">
+  <!-- Hero -->
+  <section class="lh">
+    <div class="lh__inner">
+      <mat-icon class="lh__crown">workspace_premium</mat-icon>
+      <h1 class="lh__title">{{ 'loyalty.title' | translate }}</h1>
+      <p class="lh__lead">{{ 'loyalty.subtitle' | translate }}</p>
+      @if (isMember()) {
+        <span class="lh__badge"><mat-icon>verified</mat-icon> {{ 'loyalty.memberBadge' | translate }}</span>
+      }
+    </div>
+  </section>
+
+  <div class="wrap">
+    <h2 class="section-heading">{{ 'loyalty.benefitsTitle' | translate }}</h2>
+    <div class="benefits">
+      @for (b of benefits; track b.titleKey) {
+        <div class="benefit">
+          <span class="benefit__icon"><mat-icon>{{ b.icon }}</mat-icon></span>
+          <h3 class="benefit__title">{{ b.titleKey | translate }}</h3>
+          <p class="benefit__text">{{ b.textKey | translate }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      @if (isMember()) {
+        <div class="cta__member">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <strong>{{ 'loyalty.enrolled' | translate }}</strong>
+            <p>{{ 'loyalty.enrolledText' | translate }}</p>
+          </div>
+        </div>
+       
+      } @else {
+        <button class="btn btn--solid" (click)="enroll()" [disabled]="enrolling()">
+          <mat-icon>workspace_premium</mat-icon>
+          {{ (enrolling() ? 'common.loading' : 'loyalty.enroll') | translate }}
+        </button>
+        @if (enrollError()) {
+          <p class="cta__error"><mat-icon>error_outline</mat-icon> {{ enrollError() }}</p>
+        }
+      }
+    </div>
+  </div>
+</main>
+
+<app-footer />
