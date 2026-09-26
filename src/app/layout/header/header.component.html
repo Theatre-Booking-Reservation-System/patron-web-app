@@ -1,0 +1,83 @@
+<header class="header">
+  <div class="header__inner">
+    <!-- Logo -->
+    <a class="header__brand" routerLink="/">
+      <img src="assets/logo.png" alt="Sapumal Theatre" />
+      <span class="header__brand-name">SAPUMAL<br /><small>THEATRE</small></span>
+    </a>
+
+    <!-- Primary nav -->
+    <nav class="header__nav" [class.header__nav--open]="menuOpen()">
+      <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+        {{ 'nav.home' | translate }}
+      </a>
+      <a routerLink="/productions" routerLinkActive="is-active">{{ 'nav.productions' | translate }}</a>
+      <a routerLink="/about" routerLinkActive="is-active">{{ 'nav.about' | translate }}</a>
+      <a routerLink="/plan-your-visit" routerLinkActive="is-active">
+        {{ 'nav.planYourVisit' | translate }}
+      </a>
+      <a routerLink="/contact" routerLinkActive="is-active">{{ 'nav.contact' | translate }}</a>
+    </nav>
+
+    <!-- Actions -->
+    <div class="header__actions">
+      <button class="header__icon-btn" [attr.aria-label]="'nav.search' | translate">
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <button
+        class="header__icon-btn"
+        (click)="toggleTheme()"
+        [attr.aria-label]="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        <mat-icon>{{ theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <!-- Language switcher -->
+      <div class="header__lang">
+        <button
+          class="header__lang-btn"
+          (click)="toggleLang()"
+          [attr.aria-expanded]="langOpen()"
+          [attr.aria-label]="'lang.label' | translate"
+        >
+          <mat-icon>language</mat-icon>
+          <span>{{ activeShort }}</span>
+          <mat-icon class="header__lang-caret">expand_more</mat-icon>
+        </button>
+
+        @if (langOpen()) {
+          <ul class="header__lang-menu" role="listbox">
+            @for (l of languages; track l.code) {
+              <li>
+                <button
+                  role="option"
+                  [attr.aria-selected]="l.code === activeLang()"
+                  [class.is-selected]="l.code === activeLang()"
+                  (click)="selectLang(l.code)"
+                >
+                  <span class="header__lang-short">{{ l.short }}</span>
+                  {{ l.label }}
+                  @if (l.code === activeLang()) {
+                    <mat-icon>check</mat-icon>
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <a class="header__btn header__btn--ghost" routerLink="/login">
+        {{ 'action.login' | translate }}
+      </a>
+      <a class="header__btn header__btn--solid" routerLink="/register">
+        {{ 'action.signup' | translate }}
+      </a>
+
+      <button class="header__icon-btn header__burger" (click)="toggleMenu()" aria-label="Menu">
+        <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+</header>
