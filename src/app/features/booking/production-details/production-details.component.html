@@ -29,15 +29,6 @@
           <span><mat-icon>person</mat-icon> {{ p.ageLabel }}</span>
         </div>
 
-        <div class="hero__rating">
-          <span class="stars">
-            @for (s of stars; track s) {
-              <mat-icon>{{ s <= p.rating ? 'star' : (s - 0.5 <= p.rating ? 'star_half' : 'star_border') }}</mat-icon>
-            }
-          </span>
-          <span class="hero__rating-num">{{ p.rating }} ({{ p.reviews }} {{ 'pd.reviews' | translate }})</span>
-        </div>
-
         <button class="hero__cta" (click)="bookTickets()">
           <mat-icon>confirmation_number</mat-icon> {{ 'action.bookTickets' | translate }}
         </button>
@@ -53,9 +44,6 @@
           </button>
           <button [class.tabs__btn--active]="tab() === 'cast'" class="tabs__btn" (click)="setTab('cast')">
             {{ 'pd.cast' | translate }}
-          </button>
-          <button [class.tabs__btn--active]="tab() === 'reviews'" class="tabs__btn" (click)="setTab('reviews')">
-            {{ 'pd.reviews' | translate }}
           </button>
         </div>
 
@@ -78,9 +66,6 @@
                   </li>
                 }
               </ul>
-            }
-            @case ('reviews') {
-              <p class="synopsis">{{ p.rating }} / 5 — {{ p.reviews }} {{ 'pd.reviews' | translate }}.</p>
             }
           }
         </div>

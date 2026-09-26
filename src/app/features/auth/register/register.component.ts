@@ -18,6 +18,8 @@ export class RegisterComponent {
 
   name = '';
   email = '';
+  mobile = '';
+  birthday = '';
   nic = '';
   password = '';
   confirm = '';

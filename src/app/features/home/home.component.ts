@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -79,6 +79,36 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Search bar model
   query = '';
+  dateFrom = ''; // ISO yyyy-mm-dd
+  dateTo = ''; // ISO yyyy-mm-dd
+
+  // Category dropdown (matches the admin genre list)
+  readonly categories: { value: string; labelKey: TranslationKey }[] = [
+    { value: '', labelKey: 'home.allCategories' },
+    { value: 'drama', labelKey: 'genre.drama' },
+    { value: 'musical', labelKey: 'genre.musical' },
+    { value: 'comedy', labelKey: 'genre.comedy' },
+    { value: 'dance', labelKey: 'genre.dance' },
+    { value: 'opera', labelKey: 'genre.opera' },
+    { value: 'children', labelKey: 'genre.children' },
+  ];
+  readonly category = signal('');
+  readonly catOpen = signal(false);
+
+  get categoryLabelKey(): TranslationKey {
+    return (
+      this.categories.find((c) => c.value === this.category())?.labelKey ?? 'home.allCategories'
+    );
+  }
+
+  toggleCategory(): void {
+    this.catOpen.update((v) => !v);
+  }
+
+  selectCategory(value: string): void {
+    this.category.set(value);
+    this.catOpen.set(false);
+  }
 
   ngOnInit(): void {
     this.startAutoPlay();
@@ -118,11 +148,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.startAutoPlay();
   }
 
+  /** Open the native calendar reliably (supported in modern browsers). */
+  openDatePicker(input: HTMLInputElement): void {
+    try {
+      input.showPicker?.();
+    } catch {
+      input.focus();
+    }
+  }
+
   onSearch(event: Event): void {
     event.preventDefault();
-    this.router.navigate(['/productions'], {
-      queryParams: this.query.trim() ? { q: this.query.trim() } : {},
-    });
+    const queryParams: Record<string, string> = {};
+    if (this.query.trim()) queryParams['q'] = this.query.trim();
+    if (this.dateFrom) queryParams['from'] = this.dateFrom;
+    if (this.dateTo) queryParams['to'] = this.dateTo;
+    if (this.category()) queryParams['category'] = this.category();
+    this.router.navigate(['/productions'], { queryParams });
+  }
+
+  // Close the category menu when clicking outside of it.
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.search__category')) {
+      this.catOpen.set(false);
+    }
   }
 
   // Placeholder data until the catalogue service is wired in.

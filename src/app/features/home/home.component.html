@@ -50,20 +50,51 @@
         <mat-icon>search</mat-icon>
         <input type="text" [placeholder]="'home.searchPh' | translate" [(ngModel)]="query" name="q" />
       </div>
-      <button type="submit" class="search__btn">{{ 'home.search' | translate }}</button>
 
       <div class="search__filters">
-        <button type="button" class="search__filter">
+        <!-- Date range: from -->
+        <label class="search__filter search__filter--date" (click)="openDatePicker(fromInput)">
           <mat-icon>calendar_today</mat-icon>
-          <span>{{ 'home.allDates' | translate }}</span>
-          <mat-icon class="search__caret">expand_more</mat-icon>
-        </button>
-        <button type="button" class="search__filter">
-          <mat-icon>local_offer</mat-icon>
-          <span>{{ 'home.allCategories' | translate }}</span>
-          <mat-icon class="search__caret">expand_more</mat-icon>
-        </button>
+          <span>{{ dateFrom || ('home.dateFrom' | translate) }}</span>
+          <input #fromInput type="date" name="from" [(ngModel)]="dateFrom" />
+        </label>
+        <span class="search__range-sep">–</span>
+        <!-- Date range: to -->
+        <label class="search__filter search__filter--date" (click)="openDatePicker(toInput)">
+          <mat-icon>event</mat-icon>
+          <span>{{ dateTo || ('home.dateTo' | translate) }}</span>
+          <input #toInput type="date" name="to" [min]="dateFrom" [(ngModel)]="dateTo" />
+        </label>
+
+        <!-- Category dropdown -->
+        <div class="search__category">
+          <button type="button" class="search__filter" (click)="toggleCategory()" [attr.aria-expanded]="catOpen()">
+            <mat-icon>local_offer</mat-icon>
+            <span>{{ categoryLabelKey | translate }}</span>
+            <mat-icon class="search__caret">expand_more</mat-icon>
+          </button>
+          @if (catOpen()) {
+            <ul class="search__menu" role="listbox">
+              @for (c of categories; track c.value) {
+                <li>
+                  <button
+                    type="button"
+                    role="option"
+                    [attr.aria-selected]="category() === c.value"
+                    [class.is-selected]="category() === c.value"
+                    (click)="selectCategory(c.value)"
+                  >
+                    {{ c.labelKey | translate }}
+                    @if (category() === c.value) { <mat-icon>check</mat-icon> }
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
       </div>
+
+      <button type="submit" class="search__btn">{{ 'home.search' | translate }}</button>
     </form>
   </section>
 

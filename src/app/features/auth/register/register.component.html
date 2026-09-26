@@ -47,6 +47,26 @@
         />
       </label>
 
+      <label class="field-label" for="mobile">{{ 'register.mobile' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">call</mat-icon>
+        <input
+          id="mobile"
+          type="tel"
+          name="mobile"
+          [placeholder]="'register.mobilePh' | translate"
+          autocomplete="tel"
+          [(ngModel)]="mobile"
+          required
+        />
+      </label>
+
+      <label class="field-label" for="birthday">{{ 'register.birthday' | translate }}</label>
+      <label class="field">
+        <mat-icon class="field__icon">cake</mat-icon>
+        <input id="birthday" type="date" name="birthday" [(ngModel)]="birthday" required />
+      </label>
+
       <label class="field-label" for="nic">{{ 'register.nic' | translate }}</label>
       <label class="field">
         <mat-icon class="field__icon">badge</mat-icon>

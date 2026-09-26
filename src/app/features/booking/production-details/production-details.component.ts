@@ -8,7 +8,7 @@ import { BookingStateService } from '../../../core/services/booking-state.servic
 import { productionById } from '../../../core/booking/catalogue.data';
 import { Production } from '../../../core/models/booking.models';
 
-type Tab = 'about' | 'cast' | 'reviews';
+type Tab = 'about' | 'cast';
 
 @Component({
   selector: 'app-production-details',
@@ -53,9 +53,5 @@ export class ProductionDetailsComponent {
     if (!p) return;
     this.booking.setProduction(p);
     this.router.navigate(['/book', p.id, 'performance']);
-  }
-
-  get stars(): number[] {
-    return [1, 2, 3, 4, 5];
   }
 }
