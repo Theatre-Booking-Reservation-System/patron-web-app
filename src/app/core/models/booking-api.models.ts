@@ -93,3 +93,37 @@ export interface PerformanceBookedSeatsResponse extends CommonResponse {
   bookedSeatIds?: string[];
   bookedSeatRefs?: string[];
 }
+
+// ── Admin dashboard aggregates (not used by the patron app UI) ───────────────
+
+export interface MonthlyBookingPoint {
+  month?: string;
+  label?: string;
+  bookings?: number;
+  revenue?: number;
+}
+
+export interface BookingSummaryResponse extends CommonResponse {
+  totalBookings?: number;
+  totalRevenue?: number;
+  bookingOverview?: MonthlyBookingPoint[];
+}
+
+export interface RecentBookingItem {
+  bookingId?: string;
+  bookingRef?: string;
+  patronId?: string;
+  customerName?: string;
+  performanceId?: string;
+  showName?: string;
+  performanceDate?: string;
+  performanceTime?: string;
+  totalLkr?: number;
+  status?: BookingStatus;
+  paymentStatus?: PaymentStatus;
+  createdAt?: string;
+}
+
+export interface RecentBookingsResponse extends CommonResponse {
+  bookings?: RecentBookingItem[];
+}

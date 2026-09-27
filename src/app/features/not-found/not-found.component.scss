@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+.nf {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  padding: 3rem 1.25rem;
+  background: var(--brand-bg);
+}
+
+.nf__card {
+  width: min(520px, 100%);
+  text-align: center;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 18px;
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.nf__code {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-maroon);
+  margin-bottom: 0.5rem;
+}
+
+.nf__badge {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  border-radius: 16px;
+  background: var(--brand-gold-soft);
+  color: var(--brand-maroon);
+  display: grid;
+  place-items: center;
+}
+.nf__badge mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.nf__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--brand-text);
+}
+.nf__msg {
+  color: var(--brand-muted);
+  font-size: 0.92rem;
+  margin: 0 0 1.75rem;
+  line-height: 1.6;
+}
+
+.nf__actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.7rem 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.btn--primary {
+  background: var(--brand-maroon);
+  color: #fff;
+}
+.btn--primary:hover {
+  background: var(--brand-maroon-dark);
+}
+.btn--ghost {
+  border-color: var(--brand-border);
+  background: var(--brand-surface);
+  color: var(--brand-text);
+}
+.btn--ghost:hover {
+  border-color: var(--brand-maroon);
+  color: var(--brand-maroon);
+}
