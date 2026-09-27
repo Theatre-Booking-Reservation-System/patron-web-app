@@ -27,7 +27,23 @@
     </div>
 
     <!-- Grid -->
-    @if (productions().length) {
+    @if (loading()) {
+      <div class="grid">
+        @for (n of [1,2,3,4,5,6]; track n) {
+          <div class="card card--skeleton" aria-hidden="true">
+            <div class="card__media"></div>
+            <div class="card__body">
+              <span class="sk sk--title"></span>
+              <span class="sk sk--chip"></span>
+              <span class="sk sk--row"></span>
+            </div>
+          </div>
+        }
+      </div>
+      <p class="status"><mat-icon>hourglass_empty</mat-icon> {{ 'common.loading' | translate }}</p>
+    } @else if (error()) {
+      <p class="status status--error"><mat-icon>error_outline</mat-icon> {{ 'common.errorText' | translate }}</p>
+    } @else if (productions().length) {
       <div class="grid">
         @for (p of productions(); track p.id) {
           <a class="card" [routerLink]="['/productions', p.id]">

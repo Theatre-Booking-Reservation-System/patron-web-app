@@ -9,6 +9,9 @@ import { TranslationKey } from '../../core/i18n/translations';
 import { AuthService } from '../../core/services/auth.service';
 import { LoyaltyService } from '../../core/services/loyalty.service';
 import { ConfirmService } from '../../core/services/confirm.service';
+import { LanguageService } from '../../core/services/language.service';
+import { CatalogueService } from '../../core/services/catalogue.service';
+import { ProductionItem } from '../../core/models/catalogue.models';
 
 interface ShowCard {
   id: string;
@@ -47,6 +50,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly loyalty = inject(LoyaltyService);
   private readonly confirm = inject(ConfirmService);
+  private readonly language = inject(LanguageService);
+  private readonly catalogue = inject(CatalogueService);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
 
@@ -118,6 +123,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.startAutoPlay();
+    this.loadProductions();
   }
 
   ngOnDestroy(): void {
@@ -182,81 +188,82 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Placeholder data until the catalogue service is wired in.
-  readonly nowShowing: ShowCard[] = [
-    {
-      id: 'sanda-katha',
-      name: 'Sanda Katha',
-      genreKey: 'genre.drama',
-      dateRange: '24 May – 15 Jun 2025',
-      venue: 'Main Theatre',
-      image: 'assets/bg1.jpeg',
-    },
-    {
-      id: 'dharma-patha',
-      name: 'Dharma Patha',
-      genreKey: 'genre.historical',
-      dateRange: '01 Jun – 30 Jun 2025',
-      venue: 'Main Theatre',
-      image: 'assets/curtain.png',
-    },
-    {
-      id: 'ahsa-maliga',
-      name: 'Ahsa Maliga',
-      genreKey: 'genre.musical',
-      dateRange: '15 Jul – 30 Aug 2025',
-      venue: 'Main Theatre',
-      image: 'assets/loginBg.png',
-    },
-    {
-      id: 'the-last-curtain',
-      name: 'The Merchant of Venice',
-      genreKey: 'genre.drama',
-      dateRange: '05 Aug – 28 Aug 2025',
-      venue: 'Main Theatre',
-      image: 'assets/bg1.jpeg',
-    },
-  ];
+  // Productions loaded from the catalogue service (/productions/search).
+  readonly nowShowing = signal<ShowCard[]>([]);
+  readonly upcoming = signal<ShowCard[]>([]);
+  readonly loadingShows = signal(false);
+  readonly showsError = signal(false);
 
-  // Upcoming shows are still in the members-only early-access window.
-  readonly upcoming: ShowCard[] = [
-    {
-      id: 'nava-rathri',
-      name: 'Nava Rathri',
-      genreKey: 'genre.cultural',
-      dateRange: '01 Sep – 15 Sep 2025',
-      venue: 'Main Theatre',
-      image: 'assets/curtain.png',
-      earlyAccess: true,
-    },
-    {
-      id: 'yathra-gruwa',
-      name: 'Yathra Oruwa',
-      genreKey: 'genre.comedy',
-      dateRange: '10 Jun – 20 Jun 2025',
-      venue: 'Main Theatre',
-      image: 'assets/loginBg.png',
-      earlyAccess: true,
-    },
-    {
-      id: 'nrithya-sandhya',
-      name: 'Nrithya Sandhya',
-      genreKey: 'genre.dance',
-      dateRange: '20 Sep – 12 Oct 2025',
-      venue: 'Main Theatre',
-      image: 'assets/bg1.jpeg',
-      earlyAccess: true,
-    },
-    {
-      id: 'raja-saha-ranaviru',
-      name: 'Raja Saha Ranaviru',
-      genreKey: 'genre.drama',
-      dateRange: '18 Oct – 05 Nov 2025',
-      venue: 'Main Theatre',
-      image: 'assets/curtain.png',
-      earlyAccess: true,
-    },
-  ];
+  /** Load all productions and split into now-showing vs upcoming. */
+  private loadProductions(): void {
+    this.loadingShows.set(true);
+    this.showsError.set(false);
+    // size large enough to surface the full catalogue; newest release first.
+    this.catalogue.searchProductions({ page: 0, size: 100, sort: 'releaseDate,desc' }).subscribe({
+      next: (res) => {
+        const items = res.content ?? [];
+        const today = new Date().toISOString().split('T')[0];
+        // Home shows at most 4 in each section.
+        this.nowShowing.set(
+          items
+            .filter((p) => !p.releaseDate || p.releaseDate <= today)
+            .slice(0, 4)
+            .map((p) => this.toCard(p, false)),
+        );
+        this.upcoming.set(
+          items
+            .filter((p) => p.releaseDate && p.releaseDate > today)
+            .slice(0, 4)
+            .map((p) => this.toCard(p, true)),
+        );
+        this.loadingShows.set(false);
+      },
+      error: () => {
+        this.loadingShows.set(false);
+        this.showsError.set(true);
+      },
+    });
+  }
+
+  /** Map an API production to a home ShowCard for the current UI language. */
+  private toCard(p: ProductionItem, earlyAccess: boolean): ShowCard {
+    return {
+      id: p.productionId,
+      name: this.titleFor(p),
+      genreKey: this.genreKey(p.genre),
+      dateRange: this.dateRange(p.releaseDate, p.endDate),
+      venue: 'Main Theatre, Sapumal Theatre',
+      image: p.posterImageUrl || 'assets/curtain.png',
+      earlyAccess: earlyAccess || undefined,
+    };
+  }
+
+  /** Pick the title in the active UI language, falling back to English. */
+  private titleFor(p: ProductionItem): string {
+    const lang = this.language.lang();
+    const byLang =
+      lang === 'si' ? p.titleSi : lang === 'ta' ? p.titleTa : p.titleEn;
+    return byLang || p.titleEn || p.titleSi || p.titleTa || '';
+  }
+
+  /** Map the backend genre string to a translation key, else show it raw. */
+  private genreKey(genre: string | undefined): TranslationKey {
+    const g = (genre ?? '').trim().toLowerCase();
+    const known = ['drama', 'musical', 'comedy', 'dance', 'opera', 'children', 'historical', 'cultural'];
+    return (known.includes(g) ? `genre.${g}` : 'genre.drama') as TranslationKey;
+  }
+
+  /** Format "01 Sep – 15 Sep 2025" from ISO release/end dates. */
+  private dateRange(from: string | undefined, to: string | undefined): string {
+    const fmt = (iso?: string) =>
+      iso
+        ? new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '';
+    const a = fmt(from);
+    const b = fmt(to);
+    if (a && b) return `${a} – ${b}`;
+    return a || b || '';
+  }
 
   readonly isLoyaltyMember = this.loyalty.isMember;
 

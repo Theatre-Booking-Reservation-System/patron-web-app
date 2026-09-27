@@ -11,6 +11,12 @@ export type SessionType = 'MATINEE' | 'EVENING';
 /** Production status: 1 = Active, 9 = Inactive/Archived. */
 export type ProductionStatus = number;
 
+/** A cast/crew credit, e.g. { key: 'Director', value: 'Nimal Perera' }. */
+export interface CastCrewMember {
+  key?: string;
+  value?: string;
+}
+
 export interface ProductionItem {
   productionId: string;
   titleEn?: string;
@@ -25,6 +31,7 @@ export interface ProductionItem {
   releaseDate?: string; // yyyy-MM-dd
   endDate?: string; // yyyy-MM-dd
   posterImageUrl?: string;
+  castCrew?: CastCrewMember[];
   status?: ProductionStatus;
 }
 
