@@ -104,16 +104,16 @@
       <div class="welcome__head">
         <div>
           <h2 class="welcome__title">{{ 'home.welcomeBack' | translate }}, {{ firstName }} 👋</h2>
-          @if (myUpcoming.length) {
+          @if (myUpcoming().length) {
             <p class="welcome__sub">{{ 'home.yourUpcoming' | translate }}</p>
           }
         </div>
         <a class="section__link" routerLink="/my-bookings">{{ 'account.myBookings' | translate }}</a>
       </div>
 
-      @if (myUpcoming.length) {
+      @if (myUpcoming().length) {
         <div class="mybookings">
-          @for (b of myUpcoming; track b.bookingId) {
+          @for (b of myUpcoming(); track b.bookingId) {
             <div class="mybooking">
               <img class="mybooking__img" [src]="b.image" [alt]="b.production" />
               <div class="mybooking__info">
@@ -121,7 +121,7 @@
                 <span class="mybooking__row"><mat-icon>event</mat-icon> {{ b.dateTime }}</span>
                 <span class="mybooking__row"><mat-icon>event_seat</mat-icon> {{ b.seats }}</span>
               </div>
-              <a class="mybooking__btn" routerLink="/ticket">{{ 'home.viewTicket' | translate }}</a>
+              <a class="mybooking__btn" routerLink="/ticket" [queryParams]="{ ref: b.bookingId }">{{ 'home.viewTicket' | translate }}</a>
             </div>
           }
         </div>

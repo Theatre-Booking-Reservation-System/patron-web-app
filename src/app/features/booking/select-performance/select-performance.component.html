@@ -69,6 +69,8 @@
                 <button
                   class="show"
                   [class.show--active]="selectedPerf()?.id === s.id"
+                  [class.show--disabled]="s.availability === 'fullyBooked'"
+                  [disabled]="s.availability === 'fullyBooked'"
                   (click)="selectPerf(s)"
                 >
                   <span class="show__time">
@@ -77,6 +79,7 @@
                     <small>{{ (s.time === 'matinee' ? 'perf.matinee' : 'perf.evening') | translate }}</small>
                   </span>
                   <span class="show__avail" [class]="'show__avail--' + s.availability">
+                    @if (s.availability === 'available') { <mat-icon>check_circle</mat-icon> }
                     {{ ('perf.' + s.availability) | translate }}
                   </span>
                 </button>
@@ -93,7 +96,7 @@
       <a class="btn btn--ghost" [routerLink]="['/productions', p.id]">
         <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
       </a>
-      <button class="btn btn--solid" [disabled]="!selectedPerf()" (click)="continue()">
+      <button class="btn btn--solid" [disabled]="!canContinue()" (click)="continue()">
         {{ 'perf.continueSeats' | translate }} <mat-icon>arrow_forward</mat-icon>
       </button>
     </div>

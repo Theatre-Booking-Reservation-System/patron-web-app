@@ -7,6 +7,7 @@ import { CommonResponse } from './auth.models';
 
 export type ApiLanguage = 'SINHALA' | 'TAMIL' | 'ENGLISH';
 export type SessionType = 'MATINEE' | 'EVENING';
+export type PerformanceAvailability = 'AVAILABLE' | 'LIMITED_SEATS' | 'FULLY_BOOKED';
 
 /** Production status: 1 = Active, 9 = Inactive/Archived. */
 export type ProductionStatus = number;
@@ -41,6 +42,7 @@ export interface PerformanceItem {
   date?: string; // yyyy-MM-dd
   time?: string; // HH:mm(:ss) local
   sessionType?: SessionType;
+  availability?: PerformanceAvailability;
   releaseDate?: string;
   earlyAccessOpensAt?: string;
   isEarlyAccessActive?: boolean;

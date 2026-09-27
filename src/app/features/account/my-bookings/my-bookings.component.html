@@ -54,7 +54,11 @@
       </button>
     </div>
 
-    @if (visible().length) {
+    @if (loading()) {
+      <p class="mb__status"><mat-icon>hourglass_empty</mat-icon> {{ 'common.loading' | translate }}</p>
+    } @else if (error()) {
+      <p class="mb__status mb__status--error"><mat-icon>error_outline</mat-icon> {{ 'common.errorText' | translate }}</p>
+    } @else if (visible().length) {
       <div class="list">
         @for (b of visible(); track b.bookingId) {
           <article class="booking">
@@ -76,14 +80,14 @@
             </div>
             <div class="booking__actions">
               @if (b.status === 'confirmed') {
-                <a class="btn btn--solid" routerLink="/ticket">
+                <a class="btn btn--solid" routerLink="/ticket" [queryParams]="{ ref: b.bookingId }">
                   <mat-icon>confirmation_number</mat-icon> {{ 'mb.viewTicket' | translate }}
                 </a>
-                <button class="btn btn--ghost btn--danger">
+                <button class="btn btn--ghost btn--danger" (click)="cancelBooking(b)">
                   <mat-icon>close</mat-icon> {{ 'mb.cancel' | translate }}
                 </button>
               } @else if (b.status === 'completed') {
-                <a class="btn btn--ghost" routerLink="/ticket">
+                <a class="btn btn--ghost" routerLink="/ticket" [queryParams]="{ ref: b.bookingId }">
                   <mat-icon>confirmation_number</mat-icon> {{ 'mb.viewTicket' | translate }}
                 </a>
               }

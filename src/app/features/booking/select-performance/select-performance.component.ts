@@ -103,7 +103,12 @@ export class SelectPerformanceComponent {
       date: pf.date!,
       time: isMatinee ? 'matinee' : 'evening',
       clockLabel: this.clockLabel(pf.time, isMatinee),
-      availability: 'available',
+      availability:
+        pf.availability === 'FULLY_BOOKED'
+          ? 'fullyBooked'
+          : pf.availability === 'LIMITED_SEATS'
+            ? 'limited'
+            : 'available',
     };
   }
 
@@ -173,8 +178,16 @@ export class SelectPerformanceComponent {
   }
 
   selectPerf(p: Performance): void {
+    // Fully-booked shows can't be selected for booking.
+    if (p.availability === 'fullyBooked') return;
     this.selectedPerf.set(p);
   }
+
+  /** Continue is allowed only when a non-fully-booked show is selected. */
+  readonly canContinue = computed(() => {
+    const p = this.selectedPerf();
+    return !!p && p.availability !== 'fullyBooked';
+  });
 
   readonly enrolling = signal(false);
 
@@ -199,7 +212,7 @@ export class SelectPerformanceComponent {
   continue(): void {
     const perf = this.selectedPerf();
     const prod = this.booking.draft().production;
-    if (!perf || !prod) return;
+    if (!perf || !prod || !this.canContinue()) return;
     this.booking.setPerformance(perf);
     this.router.navigate(['/book', prod.id, 'seats']);
   }

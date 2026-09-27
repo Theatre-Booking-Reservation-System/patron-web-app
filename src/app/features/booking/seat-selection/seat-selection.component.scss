@@ -355,3 +355,22 @@
     position: static;
   }
 }
+
+/* Loading / status inside the seat map */
+.seats__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 2.5rem 0;
+  font-size: 0.9rem;
+  color: var(--brand-muted);
+}
+.seats__status--error {
+  color: var(--brand-danger);
+}
+.seats__status mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}

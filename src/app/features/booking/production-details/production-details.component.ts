@@ -142,7 +142,31 @@ export class ProductionDetailsComponent {
       synopsis: p.description || '',
       image: p.posterImageUrl || 'assets/curtain.png',
       earlyAccess: !!p.releaseDate && p.releaseDate > today,
+      releaseDate: p.releaseDate,
     };
+  }
+
+  /** Days between today and the release date (negative once released). */
+  private daysUntilRelease(releaseDate: string | undefined): number | null {
+    if (!releaseDate) return null;
+    const rel = new Date(releaseDate);
+    if (Number.isNaN(rel.getTime())) return null;
+    const now = new Date();
+    // Compare at day granularity.
+    const relDay = new Date(rel.getFullYear(), rel.getMonth(), rel.getDate());
+    const nowDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((relDay.getTime() - nowDay.getTime()) / 86400000);
+  }
+
+  /** Booking window for a production: everyone open, members-only, or closed. */
+  private bookingWindow(p: Production): 'open' | 'membersOnly' | 'closed' {
+    const days = this.daysUntilRelease(p.releaseDate);
+    // No release date or already released → open to everyone.
+    if (days === null || days <= 0) return 'open';
+    // Within one week of release → loyalty members only.
+    if (days <= 7) return 'membersOnly';
+    // More than a week out → not yet bookable by anyone.
+    return 'closed';
   }
 
   private langFrom(lang: ApiLanguage | undefined): ProductionLang {
@@ -206,8 +230,22 @@ export class ProductionDetailsComponent {
     const p = this.production();
     if (!p) return;
 
-    // Early-access productions can only be booked by loyalty members before release.
-    if (p.earlyAccess && !this.loyalty.isMember()) {
+    const window = this.bookingWindow(p);
+
+    // More than a week before release → booking isn't open for anyone yet.
+    if (window === 'closed') {
+      this.confirm.open({
+        icon: 'schedule',
+        title: 'earlyModal.notOpenTitle',
+        message: 'earlyModal.notOpenText',
+        confirmText: 'earlyModal.ok',
+        onConfirm: () => {},
+      });
+      return;
+    }
+
+    // Within a week of release → loyalty members only; prompt others to enrol.
+    if (window === 'membersOnly' && !this.loyalty.isMember()) {
       this.confirm.open({
         icon: 'workspace_premium',
         title: 'earlyModal.title',

@@ -43,6 +43,7 @@ export const routes: Routes = [
       ),
   },
   {
+    // Seat map is viewable by guests; selecting a seat prompts login.
     path: 'book/:id/seats',
     loadComponent: () =>
       import('./features/booking/seat-selection/seat-selection.component').then(

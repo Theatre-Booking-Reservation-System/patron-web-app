@@ -328,3 +328,22 @@
     flex: 1;
   }
 }
+
+/* Loading / error status */
+.mb__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 2.5rem 0;
+  font-size: 0.9rem;
+  color: var(--brand-muted);
+}
+.mb__status--error {
+  color: var(--brand-danger);
+}
+.mb__status mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}

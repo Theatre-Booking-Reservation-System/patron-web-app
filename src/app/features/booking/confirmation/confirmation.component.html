@@ -19,7 +19,13 @@
       </div>
 
       <div class="conf__qr">
-        <div class="conf__qr-box"><app-qr-code [value]="bookingId" /></div>
+        <div class="conf__qr-box">
+          @if (qrCode()) {
+            <img class="conf__qr-img" [src]="qrCode()" alt="Booking QR code" />
+          } @else {
+            <app-qr-code [value]="bookingId" />
+          }
+        </div>
         <p class="conf__qr-hint">{{ 'ticket.present' | translate }}</p>
       </div>
     </div>

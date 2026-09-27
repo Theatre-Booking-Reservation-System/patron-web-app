@@ -19,12 +19,7 @@
             <button type="button" class="method" [class.method--active]="method() === 'card'" (click)="setMethod('card')">
               <mat-icon>credit_card</mat-icon> {{ 'pay.card' | translate }}
             </button>
-            <button type="button" class="method" [class.method--active]="method() === 'wallet'" (click)="setMethod('wallet')">
-              <mat-icon>account_balance_wallet</mat-icon> {{ 'pay.wallet' | translate }}
-            </button>
-            <button type="button" class="method" [class.method--active]="method() === 'bank'" (click)="setMethod('bank')">
-              <mat-icon>account_balance</mat-icon> {{ 'pay.bank' | translate }}
-            </button>
+            <!-- E-wallet and bank transfer hidden for now. -->
           </div>
         </section>
 
@@ -33,25 +28,64 @@
             <h3 class="section-title">{{ 'pay.cardDetails' | translate }}</h3>
             <div class="field">
               <label for="cardno">{{ 'pay.cardNumber' | translate }}</label>
-              <input id="cardno" name="cardno" inputmode="numeric" placeholder="1234 5678 9012 3456" [(ngModel)]="cardNumber" required />
+              <input
+                id="cardno"
+                name="cardno"
+                inputmode="numeric"
+                placeholder="1234 5678 9012 3456"
+                #cardno="ngModel"
+                [ngModel]="cardNumber()"
+                (ngModelChange)="cardNumber.set($event)"
+              />
+              @if ((cardno.touched || submitted()) && !cardNumberValid()) {
+                <p class="field-error">{{ 'pay.err.cardNumber' | translate }}</p>
+              }
             </div>
             <div class="field-row">
               <div class="field">
                 <label for="exp">{{ 'pay.expiry' | translate }}</label>
-                <input id="exp" name="exp" placeholder="MM/YY" [(ngModel)]="expiry" required />
+                <input
+                  id="exp"
+                  name="exp"
+                  placeholder="MM/YY"
+                  #exp="ngModel"
+                  [ngModel]="expiry()"
+                  (ngModelChange)="expiry.set($event)"
+                />
+                @if ((exp.touched || submitted()) && !expiryValid()) {
+                  <p class="field-error">{{ 'pay.err.expiry' | translate }}</p>
+                }
               </div>
               <div class="field">
                 <label for="cvv">{{ 'pay.cvv' | translate }}</label>
-                <input id="cvv" name="cvv" inputmode="numeric" placeholder="123" [(ngModel)]="cvv" required />
+                <input
+                  id="cvv"
+                  name="cvv"
+                  inputmode="numeric"
+                  placeholder="123"
+                  #cvvRef="ngModel"
+                  [ngModel]="cvv()"
+                  (ngModelChange)="cvv.set($event)"
+                />
+                @if ((cvvRef.touched || submitted()) && !cvvValid()) {
+                  <p class="field-error">{{ 'pay.err.cvv' | translate }}</p>
+                }
               </div>
             </div>
             <div class="field">
               <label for="cardname">{{ 'pay.cardName' | translate }}</label>
-              <input id="cardname" name="cardname" [(ngModel)]="cardName" required />
+              <input
+                id="cardname"
+                name="cardname"
+                #cardnameRef="ngModel"
+                [ngModel]="cardName()"
+                (ngModelChange)="cardName.set($event)"
+              />
+              @if ((cardnameRef.touched || submitted()) && !cardNameValid()) {
+                <p class="field-error">{{ 'pay.err.cardName' | translate }}</p>
+              }
             </div>
-            <label class="save">
-              <input type="checkbox" name="save" [(ngModel)]="saveCard" /> {{ 'pay.saveCard' | translate }}
-            </label>
+
           </section>
         }
 
@@ -59,7 +93,7 @@
           <a class="btn btn--ghost" [routerLink]="['/book', p.id, 'details']">
             <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
           </a>
-          <button type="submit" class="btn btn--solid" [disabled]="processing()">
+          <button type="submit" class="btn btn--solid" [disabled]="processing() || !formValid()">
             <mat-icon>lock</mat-icon>
             @if (processing()) { … } @else { {{ 'pay.payNow' | translate }} · LKR {{ booking.total().toLocaleString() }} }
           </button>
