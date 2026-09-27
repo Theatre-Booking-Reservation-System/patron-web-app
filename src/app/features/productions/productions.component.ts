@@ -5,7 +5,6 @@ import { HeaderComponent } from '../../layout/header/header.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationKey } from '../../core/i18n/translations';
-import { LanguageService } from '../../core/services/language.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
 import {
   ApiLanguage,
@@ -38,7 +37,6 @@ interface Production {
 })
 export class ProductionsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly language = inject(LanguageService);
   private readonly catalogue = inject(CatalogueService);
 
   // Loaded productions and request state.
@@ -150,9 +148,7 @@ export class ProductionsComponent implements OnInit {
   }
 
   private titleFor(p: ProductionItem): string {
-    const lang = this.language.lang();
-    const byLang = lang === 'si' ? p.titleSi : lang === 'ta' ? p.titleTa : p.titleEn;
-    return byLang || p.titleEn || p.titleSi || p.titleTa || '';
+    return p.title || '';
   }
 
   private langFrom(lang: ApiLanguage | undefined): ProdLang {

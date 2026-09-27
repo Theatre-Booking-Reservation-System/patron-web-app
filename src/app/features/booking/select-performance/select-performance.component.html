@@ -16,32 +16,47 @@
       <!-- Calendar -->
       <section class="card cal">
         <h3 class="cal__title">{{ 'perf.selectDate' | translate }}</h3>
-        <div class="cal__month">{{ monthLabel }}</div>
-        <div class="cal__weekdays">
-          @for (w of weekdays; track w) {
-            <span>{{ w }}</span>
-          }
+        <div class="cal__nav">
+          <button type="button" class="cal__navbtn" (click)="prevMonth()" aria-label="Previous month">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <div class="cal__month">{{ monthLabel() }}</div>
+          <button type="button" class="cal__navbtn" (click)="nextMonth()" aria-label="Next month">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
         </div>
-        <div class="cal__days">
-          @for (c of calendar(); track c.iso) {
-            @if (c.day === 0) {
-              <span class="cal__pad"></span>
-            } @else {
-              <button
-                class="cal__day"
-                [class.cal__day--shows]="c.hasShows"
-                [class.cal__day--poya]="c.poya"
-                [class.cal__day--active]="selectedDate() === c.iso"
-                [disabled]="!c.hasShows"
-                (click)="selectDate(c)"
-                [attr.title]="c.poya ? ('perf.poyaNote' | translate) : null"
-              >
-                {{ c.day }}
-              </button>
+
+        @if (loading()) {
+          <p class="cal__status"><mat-icon>hourglass_empty</mat-icon> {{ 'common.loading' | translate }}</p>
+        } @else if (error()) {
+          <p class="cal__status cal__status--error"><mat-icon>error_outline</mat-icon> {{ 'common.errorText' | translate }}</p>
+        } @else {
+          <div class="cal__weekdays">
+            @for (w of weekdays; track w) {
+              <span>{{ w }}</span>
             }
-          }
-        </div>
-        <p class="cal__note"><mat-icon>info</mat-icon> {{ 'perf.poyaNote' | translate }}</p>
+          </div>
+          <div class="cal__days">
+            @for (c of calendar(); track c.iso) {
+              @if (c.day === 0) {
+                <span class="cal__pad"></span>
+              } @else {
+                <button
+                  class="cal__day"
+                  [class.cal__day--shows]="c.hasShows"
+                  [class.cal__day--poya]="c.poya"
+                  [class.cal__day--active]="selectedDate() === c.iso"
+                  [disabled]="!c.hasShows"
+                  (click)="selectDate(c)"
+                  [attr.title]="c.poya ? ('perf.poyaNote' | translate) : null"
+                >
+                  {{ c.day }}
+                </button>
+              }
+            }
+          </div>
+          <p class="cal__note"><mat-icon>info</mat-icon> {{ 'perf.poyaNote' | translate }}</p>
+        }
       </section>
 
       <!-- Shows for the selected date -->

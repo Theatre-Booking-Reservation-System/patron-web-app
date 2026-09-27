@@ -50,10 +50,51 @@
   color: var(--brand-text);
   margin: 0 0 0.75rem;
 }
+.cal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
 .cal__month {
   font-weight: 600;
   color: var(--brand-maroon);
-  margin-bottom: 0.75rem;
+}
+.cal__navbtn {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  cursor: pointer;
+}
+.cal__navbtn:hover {
+  border-color: var(--brand-maroon);
+  color: var(--brand-maroon);
+}
+.cal__navbtn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+.cal__status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+  color: var(--brand-muted);
+}
+.cal__status--error {
+  color: var(--brand-danger);
+}
+.cal__status mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 .cal__weekdays,
 .cal__days {

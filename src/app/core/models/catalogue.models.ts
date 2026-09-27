@@ -19,19 +19,19 @@ export interface CastCrewMember {
 
 export interface ProductionItem {
   productionId: string;
-  titleEn?: string;
-  titleSi?: string;
-  titleTa?: string;
+  title?: string;
   language?: ApiLanguage;
   genre?: string;
-  descriptionEn?: string;
-  descriptionSi?: string;
-  descriptionTa?: string;
+  description?: string;
   baseTicketCost?: number;
+  /** Free-text duration, e.g. "Approx. 2 hours (with interval)". */
+  duration?: string;
+  /** Free-text age restriction, e.g. "Suitable for ages 12+". */
+  ageRestriction?: string;
+  castCrew?: CastCrewMember[];
   releaseDate?: string; // yyyy-MM-dd
   endDate?: string; // yyyy-MM-dd
   posterImageUrl?: string;
-  castCrew?: CastCrewMember[];
   status?: ProductionStatus;
 }
 

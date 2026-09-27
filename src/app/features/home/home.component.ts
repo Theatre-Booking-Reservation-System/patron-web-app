@@ -9,7 +9,6 @@ import { TranslationKey } from '../../core/i18n/translations';
 import { AuthService } from '../../core/services/auth.service';
 import { LoyaltyService } from '../../core/services/loyalty.service';
 import { ConfirmService } from '../../core/services/confirm.service';
-import { LanguageService } from '../../core/services/language.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
 import { ProductionItem } from '../../core/models/catalogue.models';
 
@@ -50,7 +49,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly loyalty = inject(LoyaltyService);
   private readonly confirm = inject(ConfirmService);
-  private readonly language = inject(LanguageService);
   private readonly catalogue = inject(CatalogueService);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
@@ -238,12 +236,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
   }
 
-  /** Pick the title in the active UI language, falling back to English. */
+  /** Production title. */
   private titleFor(p: ProductionItem): string {
-    const lang = this.language.lang();
-    const byLang =
-      lang === 'si' ? p.titleSi : lang === 'ta' ? p.titleTa : p.titleEn;
-    return byLang || p.titleEn || p.titleSi || p.titleTa || '';
+    return p.title || '';
   }
 
   /** Map the backend genre string to a translation key, else show it raw. */

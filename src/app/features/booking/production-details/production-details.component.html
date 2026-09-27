@@ -1,6 +1,15 @@
 <app-header />
 
-@if (production(); as p) {
+@if (loading()) {
+  <main class="pd pd--missing">
+    <p class="muted"><mat-icon>hourglass_empty</mat-icon> {{ 'common.loading' | translate }}</p>
+  </main>
+} @else if (error()) {
+  <main class="pd pd--missing">
+    <p class="muted">{{ 'common.errorText' | translate }}</p>
+    <a class="hero__cta" routerLink="/productions">{{ 'nav.productions' | translate }}</a>
+  </main>
+} @else if (production(); as p) {
   <main class="pd">
     <!-- Breadcrumb -->
     <nav class="crumbs">
@@ -25,8 +34,12 @@
         <div class="hero__meta">
           <span><mat-icon>event</mat-icon> {{ p.dateRange }}</span>
           <span><mat-icon>place</mat-icon> {{ p.venue }}</span>
-          <span><mat-icon>schedule</mat-icon> {{ p.durationLabel }}</span>
-          <span><mat-icon>person</mat-icon> {{ p.ageLabel }}</span>
+          @if (p.durationLabel) {
+            <span><mat-icon>schedule</mat-icon> {{ p.durationLabel }}</span>
+          }
+          @if (p.ageLabel) {
+            <span><mat-icon>person</mat-icon> {{ p.ageLabel }}</span>
+          }
         </div>
 
         <button class="hero__cta" (click)="bookTickets()">
@@ -52,20 +65,28 @@
             @case ('about') {
               <p class="synopsis">{{ p.synopsis }}</p>
               <div class="facts">
-                <div><span>{{ 'pd.duration' | translate }}</span><strong>{{ p.durationLabel }}</strong></div>
-                <div><span>{{ 'pd.age' | translate }}</span><strong>{{ p.ageLabel }}</strong></div>
+                @if (p.durationLabel) {
+                  <div><span>{{ 'pd.duration' | translate }}</span><strong>{{ p.durationLabel }}</strong></div>
+                }
+                @if (p.ageLabel) {
+                  <div><span>{{ 'pd.age' | translate }}</span><strong>{{ p.ageLabel }}</strong></div>
+                }
                 <div><span>{{ 'pd.venue' | translate }}</span><strong>{{ p.venue }}</strong></div>
               </div>
             }
             @case ('cast') {
-              <ul class="cast">
-                @for (c of cast; track c.name) {
-                  <li>
-                    <span class="cast__avatar">{{ c.name.charAt(0) }}</span>
-                    <span class="cast__info"><strong>{{ c.name }}</strong><small>{{ c.role }}</small></span>
-                  </li>
-                }
-              </ul>
+              @if (cast().length) {
+                <ul class="cast">
+                  @for (c of cast(); track c.name) {
+                    <li>
+                      <span class="cast__avatar">{{ (c.name || c.role).charAt(0) }}</span>
+                      <span class="cast__info"><strong>{{ c.name }}</strong><small>{{ c.role }}</small></span>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="muted">{{ 'prod.empty' | translate }}</p>
+              }
             }
           }
         </div>
@@ -74,14 +95,18 @@
       <!-- Show dates card -->
       <aside class="dates card">
         <h3 class="dates__title">{{ 'pd.showDates' | translate }}</h3>
-        <ul class="dates__list">
-          @for (d of showDates; track d.date) {
-            <li>
-              <span>{{ d.date }}</span>
-              <strong>{{ d.time }}</strong>
-            </li>
-          }
-        </ul>
+        @if (showDates().length) {
+          <ul class="dates__list">
+            @for (d of showDates(); track d.date + d.time) {
+              <li>
+                <span>{{ d.date }}</span>
+                <strong>{{ d.time }}</strong>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted dates__empty">{{ 'perf.selectDate' | translate }}</p>
+        }
         <button class="dates__cta" (click)="bookTickets()">{{ 'action.bookTickets' | translate }}</button>
 
         <!-- Loyalty: members see a note; everyone else sees the enrol card -->
