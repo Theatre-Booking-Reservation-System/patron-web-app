@@ -138,6 +138,10 @@ export const translations = {
     'common.errorTitle': 'Something went wrong',
     'common.errorText': 'Could not load data. Please try again.',
     'common.retry': 'Retry',
+    'notFound.title': 'Page Not Found',
+    'notFound.text': "The page you're looking for doesn't exist or may have moved. Let's get you back to the show.",
+    'notFound.home': 'Go Home',
+    'notFound.browse': 'Browse Productions',
     'conn.title': "Can't reach the server",
     'conn.message':
       "We couldn't connect to Sapumal Theatre's services. This is usually a network issue or the service being temporarily unavailable.",
@@ -522,6 +526,10 @@ export const translations = {
     'common.errorTitle': 'යම් වැරැද්දක් සිදුවිය',
     'common.errorText': 'දත්ත පූරණය කළ නොහැකි විය. නැවත උත්සාහ කරන්න.',
     'common.retry': 'නැවත උත්සාහ කරන්න',
+    'notFound.title': 'පිටුව හමු නොවීය',
+    'notFound.text': 'ඔබ සොයන පිටුව නොපවතී හෝ ගෙන ගොස් ඇත. ආපසු දර්ශනයට යමු.',
+    'notFound.home': 'මුල් පිටුවට',
+    'notFound.browse': 'නිෂ්පාදන බලන්න',
     'conn.title': 'සේවාදායකයට සම්බන්ධ විය නොහැක',
     'conn.message':
       'සපුමල් රංග ශාලාවේ සේවාවන්ට සම්බන්ධ විය නොහැකි විය. මෙය සාමාන්‍යයෙන් ජාල ගැටලුවක් හෝ සේවාව තාවකාලිකව නොමැති වීමකි.',
@@ -906,6 +914,10 @@ export const translations = {
     'common.errorTitle': 'ஏதோ தவறு நடந்தது',
     'common.errorText': 'தரவை ஏற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
     'common.retry': 'மீண்டும் முயற்சி',
+    'notFound.title': 'பக்கம் கிடைக்கவில்லை',
+    'notFound.text': 'நீங்கள் தேடும் பக்கம் இல்லை அல்லது நகர்த்தப்பட்டிருக்கலாம். நிகழ்ச்சிக்குத் திரும்பிச் செல்வோம்.',
+    'notFound.home': 'முகப்புக்குச் செல்',
+    'notFound.browse': 'நிகழ்ச்சிகளைப் பார்க்க',
     'conn.title': 'சேவையகத்தை அணுக முடியவில்லை',
     'conn.message':
       'சபுமல் அரங்கின் சேவைகளுடன் இணைக்க முடியவில்லை. இது பொதுவாக ஒரு நெட்வொர்க் சிக்கல் அல்லது சேவை தற்காலிகமாக கிடைக்காதது.',

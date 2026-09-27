@@ -1,0 +1,21 @@
+<app-header />
+
+<main class="nf">
+  <div class="nf__card">
+    <div class="nf__code">404</div>
+    <div class="nf__badge"><mat-icon>theater_comedy</mat-icon></div>
+    <h1 class="nf__title">{{ 'notFound.title' | translate }}</h1>
+    <p class="nf__msg">{{ 'notFound.text' | translate }}</p>
+
+    <div class="nf__actions">
+      <a class="btn btn--primary" routerLink="/">
+        <mat-icon>home</mat-icon> {{ 'notFound.home' | translate }}
+      </a>
+      <a class="btn btn--ghost" routerLink="/productions">
+        <mat-icon>local_activity</mat-icon> {{ 'notFound.browse' | translate }}
+      </a>
+    </div>
+  </div>
+</main>
+
+<app-footer />

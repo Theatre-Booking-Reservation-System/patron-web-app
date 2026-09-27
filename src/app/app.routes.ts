@@ -135,5 +135,10 @@ export const routes: Routes = [
       ),
   },
 
-  { path: '**', redirectTo: '' },
+  // 404 — unknown routes.
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+  },
 ];
