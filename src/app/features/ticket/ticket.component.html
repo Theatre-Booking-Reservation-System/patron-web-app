@@ -20,38 +20,38 @@
         </div>
       </div>
 
-      <h2 class="stub__production">{{ ticket.production }}</h2>
+      <h2 class="stub__production">{{ ticket().production }}</h2>
 
       <div class="stub__grid">
         <div class="stub__row">
           <span class="stub__label">{{ 'ticket.dateTime' | translate }}</span>
-          <span class="stub__value">{{ ticket.dateTime }}</span>
+          <span class="stub__value">{{ ticket().dateTime }}</span>
         </div>
         <div class="stub__row">
           <span class="stub__label">{{ 'ticket.venue' | translate }}</span>
-          <span class="stub__value">{{ ticket.venue }}</span>
+          <span class="stub__value">{{ ticket().venue }}</span>
         </div>
         <div class="stub__row">
           <span class="stub__label">{{ 'ticket.section' | translate }}</span>
-          <span class="stub__value">{{ ticket.section }}</span>
+          <span class="stub__value">{{ ticket().section }}</span>
         </div>
         <div class="stub__row">
           <span class="stub__label">{{ 'ticket.seats' | translate }}</span>
-          <span class="stub__value">{{ ticket.seats }}</span>
+          <span class="stub__value">{{ ticket().seats }}</span>
         </div>
         <div class="stub__row">
           <span class="stub__label">{{ 'ticket.patron' | translate }}</span>
-          <span class="stub__value">{{ ticket.patron }}</span>
+          <span class="stub__value">{{ ticket().patron }}</span>
         </div>
         <div class="stub__row">
           <span class="stub__label">{{ 'ticket.bookingId' | translate }}</span>
-          <span class="stub__value stub__value--mono">{{ ticket.bookingId }}</span>
+          <span class="stub__value stub__value--mono">{{ ticket().bookingId }}</span>
         </div>
       </div>
 
       <div class="stub__total">
         <span>{{ 'ticket.totalPaid' | translate }}</span>
-        <strong>{{ ticket.total }}</strong>
+        <strong>{{ ticket().total }}</strong>
       </div>
     </div>
 
@@ -61,7 +61,11 @@
     <!-- Right: QR -->
     <div class="stub__qr">
       <div class="stub__qr-box">
-        <app-qr-code [value]="ticket.bookingId" />
+        @if (ticket().qrCode) {
+          <img class="stub__qr-img" [src]="ticket().qrCode" alt="Booking QR code" />
+        } @else {
+          <app-qr-code [value]="ticket().bookingId" />
+        }
       </div>
       <p class="stub__qr-hint">{{ 'ticket.present' | translate }}</p>
       <span class="stub__enjoy">{{ 'ticket.enjoy' | translate }}</span>

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   PerformanceSeatListResponse,
+  SeatCountResponse,
   SeatZoneListResponse,
 } from '../models/seat.models';
 
@@ -27,5 +28,10 @@ export class SeatService {
     return this.http.get<PerformanceSeatListResponse>(
       `${this.baseUrl}/performances/${performanceId}/seats`,
     );
+  }
+
+  /** Total number of reference seats in the theatre. */
+  getSeatCount(): Observable<SeatCountResponse> {
+    return this.http.get<SeatCountResponse>(`${this.baseUrl}/seats/count`);
   }
 }

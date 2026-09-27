@@ -1,13 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Booking Service API models (mirrors docs/api/booking.json).
 // Creation, lookup and cancellation of theatre bookings. Requires a JWT.
-// Note: named booking-api.models to avoid clashing with the app's internal
-// domain models in booking.models.ts.
+// Named booking-api.models to avoid clashing with the app's internal domain
+// models in booking.models.ts.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { CommonResponse } from './auth.models';
 
-export type ApiConcessionType = 'UNDER_16' | 'OVER_70' | 'LARGE_PARTY';
+export type TicketType = 'REGULAR' | 'GROUP' | 'LOYALTY';
+
+export type PaymentMethod = 'CREDIT_CARD' | 'DEBIT_CARD' | 'EWALLET' | 'BANK_TRANSFER';
 
 export type BookingStatus =
   | 'PENDING'
@@ -18,65 +20,63 @@ export type BookingStatus =
 
 export type PaymentStatus = 'UNPAID' | 'PAID' | 'REFUNDED' | 'FAILED';
 
-export interface BookingLineRequest {
-  perfSeatId: string;
+/** A seat chosen for a booking. */
+export interface SeatSelection {
+  seatId: string;
   seatRef?: string;
   zoneName?: string;
-  sessionType?: string;
-  concessionType?: ApiConcessionType;
-  /** NIC/passport captured when a concession is claimed. */
-  nicPassport?: string;
-  basePriceLkr?: number;
-  concessionDiscLkr?: number;
-  loyaltyDiscLkr?: number;
-  vatLkr?: number;
-  finalPriceLkr?: number;
+  section?: string;
+}
+
+/** Card details submitted with a booking (card payment methods). */
+export interface PaymentDetails {
+  cardNumber?: string;
+  expiry?: string;
+  cvv?: string;
+  cardHolderName?: string;
 }
 
 export interface BookingRequest {
   patronId?: string;
-  guestEmail?: string;
   performanceId: string;
-  paymentToken?: string;
-  lines: BookingLineRequest[];
+  seats: SeatSelection[];
+  ticketType?: TicketType;
+  paymentMethod?: PaymentMethod;
+  paymentDetails?: PaymentDetails;
 }
 
-export interface BookingLineItem {
-  lineId?: string;
-  perfSeatId?: string;
+/** A seat as returned on a booking. */
+export interface BookingSeatItem {
+  seatId?: string;
   seatRef?: string;
   zoneName?: string;
-  sessionType?: string;
-  concessionType?: ApiConcessionType;
-  basePriceLkr?: number;
-  concessionDiscLkr?: number;
-  loyaltyDiscLkr?: number;
-  vatLkr?: number;
-  finalPriceLkr?: number;
+  section?: string;
 }
 
 export interface BookingResponse extends CommonResponse {
   bookingId?: string;
   bookingRef?: string;
   patronId?: string;
-  guestEmail?: string;
   performanceId?: string;
-  status?: BookingStatus;
-  isFlagged?: boolean;
-  subtotalLkr?: number;
-  discountLkr?: number;
-  vatLkr?: number;
+  productionName?: string;
+  performanceDate?: string;
+  performanceTime?: string;
+  seats?: BookingSeatItem[];
+  ticketType?: TicketType;
   totalLkr?: number;
-  paymentToken?: string;
+  status?: BookingStatus;
   paymentStatus?: PaymentStatus;
+  cardLast4?: string;
   createdAt?: string;
-  lines?: BookingLineItem[];
+  qrCode?: string;
 }
 
 export interface BookingItem {
   bookingId: string;
   bookingRef?: string;
   performanceId?: string;
+  seats?: BookingSeatItem[];
+  ticketType?: TicketType;
   status?: BookingStatus;
   paymentStatus?: PaymentStatus;
   totalLkr?: number;
@@ -85,4 +85,11 @@ export interface BookingItem {
 
 export interface BookingListResponse extends CommonResponse {
   bookings?: BookingItem[];
+}
+
+/** Booked seats for a performance (to grey out on the seat map). */
+export interface PerformanceBookedSeatsResponse extends CommonResponse {
+  performanceId?: string;
+  bookedSeatIds?: string[];
+  bookedSeatRefs?: string[];
 }

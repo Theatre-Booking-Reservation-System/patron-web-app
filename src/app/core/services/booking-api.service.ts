@@ -6,6 +6,7 @@ import {
   BookingListResponse,
   BookingRequest,
   BookingResponse,
+  PerformanceBookedSeatsResponse,
 } from '../models/booking-api.models';
 
 /**
@@ -21,9 +22,16 @@ export class BookingApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.services.booking;
 
-  /** Create a booking (created PENDING / UNPAID; totals aggregated from lines). */
+  /** Create a booking from selected seats, ticket type and payment details. */
   createBooking(payload: BookingRequest): Observable<BookingResponse> {
     return this.http.post<BookingResponse>(`${this.baseUrl}/bookings`, payload);
+  }
+
+  /** Booked seat ids/refs for a performance (to grey out already-taken seats). */
+  getBookedSeats(performanceId: string): Observable<PerformanceBookedSeatsResponse> {
+    return this.http.get<PerformanceBookedSeatsResponse>(
+      `${this.baseUrl}/performances/${performanceId}/bookings`,
+    );
   }
 
   /** Look up a booking by its human-readable reference (e.g. STB-20260913-00847). */

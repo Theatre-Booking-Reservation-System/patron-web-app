@@ -23,7 +23,6 @@ export interface SeatZoneListResponse extends CommonResponse {
 }
 
 export interface PerformanceSeatItem {
-  perfSeatId: string;
   seatId: string;
   zoneId?: string;
   section?: SeatSection;
@@ -32,11 +31,14 @@ export interface PerformanceSeatItem {
   seatNumber?: number;
   wheelchairSpace?: boolean;
   status?: PerformanceSeatStatus;
-  /** ISO date-time until which a HELD seat remains reserved. */
-  heldUntil?: string;
 }
 
 export interface PerformanceSeatListResponse extends CommonResponse {
   performanceId?: string;
   seats?: PerformanceSeatItem[];
+}
+
+/** Total reference seats in the theatre (for availability math). */
+export interface SeatCountResponse extends CommonResponse {
+  total?: number;
 }

@@ -6,7 +6,8 @@ export interface ConfirmOptions {
   title: string;
   message: string;
   confirmText: string;
-  cancelText: string;
+  /** Optional. Omit for an info-only dialog with a single button. */
+  cancelText?: string;
   onConfirm: () => void;
 }
 

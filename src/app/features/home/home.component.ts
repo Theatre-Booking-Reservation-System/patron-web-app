@@ -9,6 +9,12 @@ import { TranslationKey } from '../../core/i18n/translations';
 import { AuthService } from '../../core/services/auth.service';
 import { LoyaltyService } from '../../core/services/loyalty.service';
 import { ConfirmService } from '../../core/services/confirm.service';
+import { CatalogueService } from '../../core/services/catalogue.service';
+import { BookingApiService } from '../../core/services/booking-api.service';
+import { PerformanceResponse, ProductionItem } from '../../core/models/catalogue.models';
+import { BookingItem } from '../../core/models/booking-api.models';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 interface ShowCard {
   id: string;
@@ -47,6 +53,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly loyalty = inject(LoyaltyService);
   private readonly confirm = inject(ConfirmService);
+  private readonly catalogue = inject(CatalogueService);
+  private readonly bookingApi = inject(BookingApiService);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
 
@@ -55,23 +63,87 @@ export class HomeComponent implements OnInit, OnDestroy {
     return this.auth.user()?.name?.trim().split(/\s+/)[0] ?? '';
   }
 
-  // Placeholder upcoming bookings for the signed-in patron.
-  readonly myUpcoming: UpcomingBooking[] = [
-    {
-      bookingId: 'BK20250524-001',
-      production: 'Sanda Katha',
-      dateTime: '24 May 2025, 7:00 PM',
-      seats: 'C12, C13',
-      image: 'assets/bg1.jpeg',
-    },
-    {
-      bookingId: 'BK20250610-014',
-      production: 'Yathra Oruwa',
-      dateTime: '10 Jun 2025, 3:00 PM',
-      seats: 'A5, A6',
-      image: 'assets/loginBg.png',
-    },
-  ];
+  // The signed-in patron's upcoming bookings (from GET /patrons/{id}/bookings).
+  readonly myUpcoming = signal<UpcomingBooking[]>([]);
+
+  /** Load the patron's active/upcoming bookings for the welcome section. */
+  private loadMyBookings(): void {
+    const patronId = this.auth.user()?.userId;
+    if (!patronId) return;
+    this.bookingApi.getBookingsByPatronId(patronId).subscribe({
+      next: (res) => {
+        const items = (res.bookings ?? []).filter(
+          (b) => b.status === 'CONFIRMED' || b.status === 'PENDING',
+        );
+        if (!items.length) {
+          this.myUpcoming.set([]);
+          return;
+        }
+        // Look up each booking's performance (production name + show date/time)
+        // from the catalogue, which the home already relies on.
+        forkJoin(
+          items.map((b) =>
+            b.performanceId
+              ? this.catalogue.getPerformanceById(b.performanceId).pipe(catchError(() => of(null)))
+              : of(null),
+          ),
+        ).subscribe((perfs) => {
+          // Soonest upcoming show first; show at most 2 on the home page.
+          const rows = items
+            .map((b, i) => ({ row: this.toUpcoming(b, perfs[i]), date: perfs[i]?.date ?? '' }))
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .slice(0, 2)
+            .map((x) => x.row);
+          this.myUpcoming.set(rows);
+        });
+      },
+      error: (err) => {
+        this.myUpcoming.set([]);
+        // 403/401 → session no longer valid for this user: sign out so the
+        // welcome section and user menu are hidden.
+        if (err?.status === 403 || err?.status === 401) {
+          this.auth.logout();
+          this.loyalty.cancel();
+        }
+      },
+    });
+  }
+
+  private toUpcoming(b: BookingItem, perf: PerformanceResponse | null): UpcomingBooking {
+    const seats = (b.seats ?? []).map((s) => s.seatRef).filter(Boolean).join(', ');
+    const pid = perf?.productionId;
+    const name = pid ? this.productionNameById.get(pid) : '';
+    const image = (pid && this.productionImageById.get(pid)) || 'assets/curtain.png';
+    return {
+      bookingId: b.bookingRef || b.bookingId,
+      production: name || 'Booking',
+      dateTime: this.showDateTime(perf),
+      seats: seats || '—',
+      image,
+    };
+  }
+
+  private showDateTime(perf: PerformanceResponse | null): string {
+    if (!perf?.date) return '';
+    const date = new Date(perf.date).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+    const time = this.clockLabel(perf.time);
+    return time ? `${date}, ${time}` : date;
+  }
+
+  private clockLabel(time: string | undefined): string {
+    if (!time) return '';
+    const [hStr, mStr] = time.split(':');
+    const h = parseInt(hStr, 10);
+    const m = parseInt(mStr ?? '0', 10);
+    if (Number.isNaN(h)) return '';
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hr12 = ((h + 11) % 12) + 1;
+    return `${hr12}:${`${Number.isNaN(m) ? 0 : m}`.padStart(2, '0')} ${ampm}`;
+  }
 
   // Hero carousel slides — images live in /public/assets.
   readonly slides: HeroSlide[] = [
@@ -118,6 +190,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.startAutoPlay();
+    // loadProductions() triggers loadMyBookings() once the production names are
+    // known, so bookings can be labelled with their production name.
+    this.loadProductions();
   }
 
   ngOnDestroy(): void {
@@ -182,81 +257,96 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Placeholder data until the catalogue service is wired in.
-  readonly nowShowing: ShowCard[] = [
-    {
-      id: 'sanda-katha',
-      name: 'Sanda Katha',
-      genreKey: 'genre.drama',
-      dateRange: '24 May – 15 Jun 2025',
-      venue: 'Main Theatre',
-      image: 'assets/bg1.jpeg',
-    },
-    {
-      id: 'dharma-patha',
-      name: 'Dharma Patha',
-      genreKey: 'genre.historical',
-      dateRange: '01 Jun – 30 Jun 2025',
-      venue: 'Main Theatre',
-      image: 'assets/curtain.png',
-    },
-    {
-      id: 'ahsa-maliga',
-      name: 'Ahsa Maliga',
-      genreKey: 'genre.musical',
-      dateRange: '15 Jul – 30 Aug 2025',
-      venue: 'Main Theatre',
-      image: 'assets/loginBg.png',
-    },
-    {
-      id: 'the-last-curtain',
-      name: 'The Merchant of Venice',
-      genreKey: 'genre.drama',
-      dateRange: '05 Aug – 28 Aug 2025',
-      venue: 'Main Theatre',
-      image: 'assets/bg1.jpeg',
-    },
-  ];
+  // Productions loaded from the catalogue service (/productions/search).
+  readonly nowShowing = signal<ShowCard[]>([]);
+  readonly upcoming = signal<ShowCard[]>([]);
+  readonly loadingShows = signal(false);
+  readonly showsError = signal(false);
 
-  // Upcoming shows are still in the members-only early-access window.
-  readonly upcoming: ShowCard[] = [
-    {
-      id: 'nava-rathri',
-      name: 'Nava Rathri',
-      genreKey: 'genre.cultural',
-      dateRange: '01 Sep – 15 Sep 2025',
-      venue: 'Main Theatre',
-      image: 'assets/curtain.png',
-      earlyAccess: true,
-    },
-    {
-      id: 'yathra-gruwa',
-      name: 'Yathra Oruwa',
-      genreKey: 'genre.comedy',
-      dateRange: '10 Jun – 20 Jun 2025',
-      venue: 'Main Theatre',
-      image: 'assets/loginBg.png',
-      earlyAccess: true,
-    },
-    {
-      id: 'nrithya-sandhya',
-      name: 'Nrithya Sandhya',
-      genreKey: 'genre.dance',
-      dateRange: '20 Sep – 12 Oct 2025',
-      venue: 'Main Theatre',
-      image: 'assets/bg1.jpeg',
-      earlyAccess: true,
-    },
-    {
-      id: 'raja-saha-ranaviru',
-      name: 'Raja Saha Ranaviru',
-      genreKey: 'genre.drama',
-      dateRange: '18 Oct – 05 Nov 2025',
-      venue: 'Main Theatre',
-      image: 'assets/curtain.png',
-      earlyAccess: true,
-    },
-  ];
+  /** productionId → title / poster, used to name+illustrate a booking. */
+  private readonly productionNameById = new Map<string, string>();
+  private readonly productionImageById = new Map<string, string>();
+
+  /** Load all productions and split into now-showing vs upcoming. */
+  private loadProductions(): void {
+    this.loadingShows.set(true);
+    this.showsError.set(false);
+    // size large enough to surface the full catalogue; newest release first.
+    this.catalogue.searchProductions({ page: 0, size: 100, sort: 'releaseDate,desc' }).subscribe({
+      next: (res) => {
+        const items = res.content ?? [];
+        for (const p of items) {
+          if (p.productionId) {
+            this.productionNameById.set(p.productionId, p.title || '');
+            if (p.posterImageUrl) this.productionImageById.set(p.productionId, p.posterImageUrl);
+          }
+        }
+        // Now that we know production names, (re)load the patron's bookings.
+        if (this.auth.isAuthenticated()) this.loadMyBookings();
+        const today = new Date().toISOString().split('T')[0];
+        const byReleaseAsc = (a: ProductionItem, b: ProductionItem) =>
+          (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '');
+        // Now Showing: earliest release first (consistent with Upcoming).
+        this.nowShowing.set(
+          items
+            .filter((p) => !p.releaseDate || p.releaseDate <= today)
+            .sort(byReleaseAsc)
+            .slice(0, 4)
+            .map((p) => this.toCard(p, false)),
+        );
+        // Upcoming: soonest to open first.
+        this.upcoming.set(
+          items
+            .filter((p) => p.releaseDate && p.releaseDate > today)
+            .sort(byReleaseAsc)
+            .slice(0, 4)
+            .map((p) => this.toCard(p, true)),
+        );
+        this.loadingShows.set(false);
+      },
+      error: () => {
+        this.loadingShows.set(false);
+        this.showsError.set(true);
+      },
+    });
+  }
+
+  /** Map an API production to a home ShowCard for the current UI language. */
+  private toCard(p: ProductionItem, earlyAccess: boolean): ShowCard {
+    return {
+      id: p.productionId,
+      name: this.titleFor(p),
+      genreKey: this.genreKey(p.genre),
+      dateRange: this.dateRange(p.releaseDate, p.endDate),
+      venue: 'Main Theatre, Sapumal Theatre',
+      image: p.posterImageUrl || 'assets/curtain.png',
+      earlyAccess: earlyAccess || undefined,
+    };
+  }
+
+  /** Production title. */
+  private titleFor(p: ProductionItem): string {
+    return p.title || '';
+  }
+
+  /** Map the backend genre string to a translation key, else show it raw. */
+  private genreKey(genre: string | undefined): TranslationKey {
+    const g = (genre ?? '').trim().toLowerCase();
+    const known = ['drama', 'musical', 'comedy', 'dance', 'opera', 'children', 'historical', 'cultural'];
+    return (known.includes(g) ? `genre.${g}` : 'genre.drama') as TranslationKey;
+  }
+
+  /** Format "01 Sep – 15 Sep 2025" from ISO release/end dates. */
+  private dateRange(from: string | undefined, to: string | undefined): string {
+    const fmt = (iso?: string) =>
+      iso
+        ? new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '';
+    const a = fmt(from);
+    const b = fmt(to);
+    if (a && b) return `${a} – ${b}`;
+    return a || b || '';
+  }
 
   readonly isLoyaltyMember = this.loyalty.isMember;
 

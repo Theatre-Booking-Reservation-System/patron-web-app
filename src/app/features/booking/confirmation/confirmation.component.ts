@@ -24,6 +24,8 @@ import { BookingStateService } from '../../../core/services/booking-state.servic
 export class ConfirmationComponent {
   readonly booking = inject(BookingStateService);
   readonly bookingId: string;
+  /** QR image (data URL) from the booking API, if available. */
+  readonly qrCode = this.booking.qrCode;
 
   constructor() {
     // Finalise the booking reference (idempotent).

@@ -1,10 +1,16 @@
-import { Component, computed, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { HeaderComponent } from '../../layout/header/header.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationKey } from '../../core/i18n/translations';
+import { CatalogueService } from '../../core/services/catalogue.service';
+import {
+  ApiLanguage,
+  ProductionItem,
+  ProductionSearchParams,
+} from '../../core/models/catalogue.models';
 
 type ProdLang = 'en' | 'si' | 'ta';
 
@@ -16,6 +22,10 @@ interface Production {
   dateRange: string;
   basePrice: number;
   image: string;
+  /** ISO release date, used to split now-showing vs upcoming. */
+  releaseDate?: string;
+  /** Raw backend genre string, used for category matching + text search. */
+  genre?: string;
 }
 
 @Component({
@@ -25,65 +35,23 @@ interface Production {
   templateUrl: './productions.component.html',
   styleUrl: './productions.component.scss',
 })
-export class ProductionsComponent {
-  // Placeholder catalogue until the catalogue service is wired in.
-  private readonly all: Production[] = [
-    {
-      id: 'sanda-katha',
-      name: 'Sanda Katha',
-      genreKey: 'genre.drama',
-      language: 'si',
-      dateRange: '24 May – 15 Jun 2025',
-      basePrice: 1500,
-      image: 'assets/bg1.jpeg',
-    },
-    {
-      id: 'dharma-patha',
-      name: 'Dharma Patha',
-      genreKey: 'genre.historical',
-      language: 'si',
-      dateRange: '01 Jun – 30 Jun 2025',
-      basePrice: 1800,
-      image: 'assets/curtain.png',
-    },
-    {
-      id: 'yathra-gruwa',
-      name: 'Yathra Gruwa',
-      genreKey: 'genre.comedy',
-      language: 'ta',
-      dateRange: '10 Jun – 20 Jul 2025',
-      basePrice: 1200,
-      image: 'assets/loginBg.png',
-    },
-    {
-      id: 'ahsa-maliga',
-      name: 'Ahsa Maliga',
-      genreKey: 'genre.musical',
-      language: 'en',
-      dateRange: '15 Jul – 30 Aug 2025',
-      basePrice: 2000,
-      image: 'assets/bg1.jpeg',
-    },
-    {
-      id: 'kurulu-bandhana',
-      name: 'Kurulu Bandhana',
-      genreKey: 'genre.drama',
-      language: 'ta',
-      dateRange: '05 Aug – 25 Aug 2025',
-      basePrice: 1600,
-      image: 'assets/curtain.png',
-    },
-    {
-      id: 'the-last-curtain',
-      name: 'The Last Curtain',
-      genreKey: 'genre.drama',
-      language: 'en',
-      dateRange: '01 Sep – 20 Sep 2025',
-      basePrice: 2200,
-      image: 'assets/loginBg.png',
-    },
-  ];
+export class ProductionsComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly catalogue = inject(CatalogueService);
 
+  // Loaded productions and request state.
+  private readonly all = signal<Production[]>([]);
+  readonly loading = signal(false);
+  readonly error = signal(false);
+
+  // 'upcoming' | 'now' | null (all) — from the ?upcoming= query param.
+  private readonly showFilter = signal<'upcoming' | 'now' | null>(null);
+
+  // Free-text search + category from the home search bar (?q= / ?category=).
+  private readonly searchText = signal('');
+  private readonly category = signal('');
+
+  // Client-side language filter (applied on top of the loaded results).
   readonly filter = signal<ProdLang | 'all'>('all');
 
   readonly filters: { value: ProdLang | 'all'; labelKey: TranslationKey }[] = [
@@ -94,9 +62,115 @@ export class ProductionsComponent {
   ];
 
   readonly productions = computed(() => {
+    const today = new Date().toISOString().split('T')[0];
+    let list = this.all();
+
+    // Show filter (from ?upcoming=): now-showing vs upcoming by release date.
+    const show = this.showFilter();
+    if (show === 'upcoming') {
+      list = list.filter((p) => p.releaseDate && p.releaseDate > today);
+    } else if (show === 'now') {
+      list = list.filter((p) => !p.releaseDate || p.releaseDate <= today);
+    }
+
+    // Category filter (from the home search category), matched on genre.
+    const cat = this.category().trim().toLowerCase();
+    if (cat) {
+      list = list.filter((p) => (p.genre ?? '').toLowerCase().includes(cat));
+    }
+
+    // Free-text search over title + genre.
+    const q = this.searchText().trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) || (p.genre ?? '').toLowerCase().includes(q),
+      );
+    }
+
+    // Language filter.
     const f = this.filter();
-    return f === 'all' ? this.all : this.all.filter((p) => p.language === f);
+    if (f !== 'all') list = list.filter((p) => p.language === f);
+
+    return list;
   });
+
+  ngOnInit(): void {
+    // Re-run the search whenever the query params change (e.g. from the home
+    // search bar, or the "View All" links carrying an `upcoming` flag).
+    this.route.queryParamMap.subscribe((qp) => {
+      const params: ProductionSearchParams = { page: 0, size: 100, sort: 'releaseDate,desc' };
+
+      const upcoming = qp.get('upcoming');
+
+      // Search text + category from the home search bar. Filtering is applied
+      // client-side because the backend `q` filter isn't reliable here.
+      this.searchText.set(qp.get('q') ?? '');
+      this.category.set(qp.get('category') ?? '');
+
+      // Now-showing vs upcoming is decided client-side from release dates,
+      // because the backend `upcoming` filter isn't reliable here.
+      this.showFilter.set(
+        upcoming === 'true' ? 'upcoming' : upcoming === 'false' ? 'now' : null,
+      );
+
+      this.load(params);
+    });
+  }
+
+  private load(params: ProductionSearchParams): void {
+    this.loading.set(true);
+    this.error.set(false);
+    this.catalogue.searchProductions(params).subscribe({
+      next: (res) => {
+        this.all.set((res.content ?? []).map((p) => this.toProduction(p)));
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set(true);
+      },
+    });
+  }
+
+  private toProduction(p: ProductionItem): Production {
+    return {
+      id: p.productionId,
+      name: this.titleFor(p),
+      genreKey: this.genreKey(p.genre),
+      language: this.langFrom(p.language),
+      dateRange: this.dateRange(p.releaseDate, p.endDate),
+      basePrice: p.baseTicketCost ?? 0,
+      image: p.posterImageUrl || 'assets/curtain.png',
+      releaseDate: p.releaseDate,
+      genre: p.genre,
+    };
+  }
+
+  private titleFor(p: ProductionItem): string {
+    return p.title || '';
+  }
+
+  private langFrom(lang: ApiLanguage | undefined): ProdLang {
+    return lang === 'SINHALA' ? 'si' : lang === 'TAMIL' ? 'ta' : 'en';
+  }
+
+  private genreKey(genre: string | undefined): TranslationKey {
+    const g = (genre ?? '').trim().toLowerCase();
+    const known = ['drama', 'musical', 'comedy', 'dance', 'opera', 'children', 'historical', 'cultural'];
+    return (known.includes(g) ? `genre.${g}` : 'genre.drama') as TranslationKey;
+  }
+
+  private dateRange(from: string | undefined, to: string | undefined): string {
+    const fmt = (iso?: string) =>
+      iso
+        ? new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '';
+    const a = fmt(from);
+    const b = fmt(to);
+    if (a && b) return `${a} – ${b}`;
+    return a || b || '';
+  }
 
   setFilter(value: ProdLang | 'all'): void {
     this.filter.set(value);

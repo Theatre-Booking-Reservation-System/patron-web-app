@@ -7,21 +7,29 @@ import { CommonResponse } from './auth.models';
 
 export type ApiLanguage = 'SINHALA' | 'TAMIL' | 'ENGLISH';
 export type SessionType = 'MATINEE' | 'EVENING';
+export type PerformanceAvailability = 'AVAILABLE' | 'LIMITED_SEATS' | 'FULLY_BOOKED';
 
 /** Production status: 1 = Active, 9 = Inactive/Archived. */
 export type ProductionStatus = number;
 
+/** A cast/crew credit, e.g. { key: 'Director', value: 'Nimal Perera' }. */
+export interface CastCrewMember {
+  key?: string;
+  value?: string;
+}
+
 export interface ProductionItem {
   productionId: string;
-  titleEn?: string;
-  titleSi?: string;
-  titleTa?: string;
+  title?: string;
   language?: ApiLanguage;
   genre?: string;
-  descriptionEn?: string;
-  descriptionSi?: string;
-  descriptionTa?: string;
+  description?: string;
   baseTicketCost?: number;
+  /** Free-text duration, e.g. "Approx. 2 hours (with interval)". */
+  duration?: string;
+  /** Free-text age restriction, e.g. "Suitable for ages 12+". */
+  ageRestriction?: string;
+  castCrew?: CastCrewMember[];
   releaseDate?: string; // yyyy-MM-dd
   endDate?: string; // yyyy-MM-dd
   posterImageUrl?: string;
@@ -34,6 +42,7 @@ export interface PerformanceItem {
   date?: string; // yyyy-MM-dd
   time?: string; // HH:mm(:ss) local
   sessionType?: SessionType;
+  availability?: PerformanceAvailability;
   releaseDate?: string;
   earlyAccessOpensAt?: string;
   isEarlyAccessActive?: boolean;

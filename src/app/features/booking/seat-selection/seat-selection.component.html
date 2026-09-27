@@ -17,29 +17,37 @@
       <section class="card map">
         <div class="stage">{{ 'seats.stage' | translate }}</div>
 
-        @for (g of groups(); track g.location) {
-          <div class="loc">
-            <h4 class="loc__label">{{ g.label }}</h4>
-            @for (r of g.rows; track r.row) {
-              <div class="row">
-                <span class="row__label">{{ r.row }}</span>
-                <div class="row__seats">
-                  @for (s of r.seats; track s.id) {
-                    <button
-                      class="seat"
-                      [class.seat--booked]="s.status === 'booked'"
-                      [class.seat--unavailable]="s.status === 'unavailable'"
-                      [class.seat--selected]="s.status === 'selected'"
-                      [disabled]="s.status === 'booked' || s.status === 'unavailable'"
-                      (click)="toggleSeat(s)"
-                      [attr.aria-label]="s.row + s.number"
-                      [attr.title]="s.row + s.number"
-                    ></button>
-                  }
+        @if (loading()) {
+          <p class="seats__status"><mat-icon>hourglass_empty</mat-icon> {{ 'common.loading' | translate }}</p>
+        } @else if (error()) {
+          <p class="seats__status seats__status--error"><mat-icon>error_outline</mat-icon> {{ 'common.errorText' | translate }}</p>
+        } @else if (!groups().length) {
+          <p class="seats__status muted">{{ 'seats.none' | translate }}</p>
+        } @else {
+          @for (g of groups(); track g.location) {
+            <div class="loc">
+              <h4 class="loc__label">{{ g.label }}</h4>
+              @for (r of g.rows; track r.row) {
+                <div class="row">
+                  <span class="row__label">{{ r.row }}</span>
+                  <div class="row__seats">
+                    @for (s of r.seats; track s.key) {
+                      <button
+                        class="seat"
+                        [class.seat--booked]="s.status === 'booked'"
+                        [class.seat--unavailable]="s.status === 'unavailable'"
+                        [class.seat--selected]="s.status === 'selected'"
+                        [disabled]="s.status === 'booked' || s.status === 'unavailable'"
+                        (click)="toggleSeat(s)"
+                        [attr.aria-label]="s.row + s.number"
+                        [attr.title]="s.row + s.number"
+                      ></button>
+                    }
+                  </div>
                 </div>
-              </div>
-            }
-          </div>
+              }
+            </div>
+          }
         }
 
         <!-- Legend -->

@@ -41,10 +41,7 @@ export class ThemeService {
     } catch {
       /* ignore */
     }
-    // Respect the OS preference on first visit, else default to light.
-    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
+    // Default to light on first visit (ignoring the OS preference).
     return 'light';
   }
 }

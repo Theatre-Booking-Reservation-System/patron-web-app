@@ -35,6 +35,9 @@ export class BookingStateService {
   /** Set once payment succeeds, so confirmation + e-ticket share one reference. */
   readonly bookingId = signal<string | null>(null);
 
+  /** QR code image (data URL) returned by the booking API, if any. */
+  readonly qrCode = signal<string | null>(null);
+
   // Derived totals
   readonly subtotal = computed(() => this._draft().seats.reduce((sum, s) => sum + s.price, 0));
 
@@ -72,6 +75,7 @@ export class BookingStateService {
   reset(): void {
     this._draft.set(emptyDraft());
     this.bookingId.set(null);
+    this.qrCode.set(null);
   }
 
   /** Generates and stores a booking reference for the confirmation/ticket. */

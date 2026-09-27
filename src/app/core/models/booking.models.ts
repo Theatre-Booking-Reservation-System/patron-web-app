@@ -38,7 +38,7 @@ export interface Performance {
   date: string; // ISO date
   time: ShowTime;
   clockLabel: string; // e.g. "7:00 PM"
-  availability: 'available' | 'limited' | 'popular';
+  availability: 'available' | 'limited' | 'fullyBooked';
 }
 
 export interface Production {
@@ -57,6 +57,8 @@ export interface Production {
   image: string;
   /** True while in the members-only pre-release window (loyalty can book early). */
   earlyAccess?: boolean;
+  /** Official release date (yyyy-MM-dd), used for the early-access window check. */
+  releaseDate?: string;
 }
 
 /** Concession types — non-compound; the single best is applied. */
@@ -75,8 +77,10 @@ export interface ConcessionOption {
 export interface SelectedSeat {
   seatId: string;
   label: string; // "C12"
-  tierLabel: string;
+  tierLabel: string; // zone name
   price: number;
+  /** Seat section (STALLS / CIRCLE / UPPER_CIRCLE) for the booking payload. */
+  section?: string;
 }
 
 /** The in-progress booking carried across the flow steps. */

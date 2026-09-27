@@ -198,7 +198,7 @@ export function performancesFor(productionId: string, year: number, month0: numb
       date: iso,
       time: 'evening',
       clockLabel: '7:00 PM',
-      availability: day % 2 === 0 ? 'popular' : 'limited',
+      availability: day % 2 === 0 ? 'available' : 'limited',
     });
   }
   return out;
