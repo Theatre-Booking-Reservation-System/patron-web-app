@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   BookingListResponse,
   BookingRequest,
   BookingResponse,
+  BookingSummaryResponse,
   PerformanceBookedSeatsResponse,
+  RecentBookingsResponse,
 } from '../models/booking-api.models';
 
 /**
@@ -47,5 +49,18 @@ export class BookingApiService {
   /** Cancel a booking by id. Paid bookings are marked for refund. */
   cancelBooking(bookingId: string): Observable<BookingResponse> {
     return this.http.put<BookingResponse>(`${this.baseUrl}/bookings/${bookingId}/cancel`, {});
+  }
+
+  // ── Admin dashboard aggregates (not used by the patron UI) ─────────────────
+
+  /** Recent bookings across all patrons (admin dashboard). Defaults to 5 rows. */
+  getRecentBookings(limit?: number): Observable<RecentBookingsResponse> {
+    const params = limit != null ? new HttpParams().set('limit', String(limit)) : undefined;
+    return this.http.get<RecentBookingsResponse>(`${this.baseUrl}/bookings/recent`, { params });
+  }
+
+  /** Aggregate booking totals + per-month overview (admin dashboard). */
+  getBookingSummary(): Observable<BookingSummaryResponse> {
+    return this.http.get<BookingSummaryResponse>(`${this.baseUrl}/bookings/summary`);
   }
 }
