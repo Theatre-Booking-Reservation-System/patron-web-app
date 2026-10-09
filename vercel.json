@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/patron-web-app/browser",
+  "rewrites": [
+    {
+      "source": "/identity-service/:path*",
+      "destination": "http://ec2-3-237-240-69.compute-1.amazonaws.com/identity-service/:path*"
+    },
+    {
+      "source": "/catalogue-service/:path*",
+      "destination": "http://ec2-3-237-240-69.compute-1.amazonaws.com/catalogue-service/:path*"
+    },
+    {
+      "source": "/seat-service/:path*",
+      "destination": "http://ec2-3-237-240-69.compute-1.amazonaws.com/seat-service/:path*"
+    },
+    {
+      "source": "/booking-service/:path*",
+      "destination": "http://ec2-3-237-240-69.compute-1.amazonaws.com/booking-service/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
