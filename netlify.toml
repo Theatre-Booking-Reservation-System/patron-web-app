@@ -1,0 +1,50 @@
+# Netlify deployment config for the Sapumal Theatre patron web app.
+#
+# WHY THIS WORKS WITHOUT BACKEND ACCESS:
+# Netlify serves the app over HTTPS. The app calls relative paths like
+# "/identity-service/...". The redirect rules below proxy those paths
+# server-side to the HTTP backend. The browser only ever makes HTTPS calls to
+# this Netlify site, so there is no mixed-content block and no CORS — the plain
+# HTTP hop to the backend happens on Netlify's servers.
+
+[build]
+  command = "npm run build"
+  publish = "dist/patron-web-app/browser"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# ---- API proxies (status 200 = rewrite/proxy, not a visible redirect) ----
+# force = true so these win over the SPA fallback below.
+
+[[redirects]]
+  from = "/identity-service/*"
+  to = "http://ec2-3-237-240-69.compute-1.amazonaws.com/identity-service/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/catalogue-service/*"
+  to = "http://ec2-3-237-240-69.compute-1.amazonaws.com/catalogue-service/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/seat-service/*"
+  to = "http://ec2-3-237-240-69.compute-1.amazonaws.com/seat-service/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/booking-service/*"
+  to = "http://ec2-3-237-240-69.compute-1.amazonaws.com/booking-service/:splat"
+  status = 200
+  force = true
+
+# ---- SPA fallback ----
+# Any other path returns index.html so Angular client-side routing works on
+# refresh / deep links (e.g. /productions, /book/:id/seats).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
