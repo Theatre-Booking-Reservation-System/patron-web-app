@@ -286,10 +286,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         const today = new Date().toISOString().split('T')[0];
         const byReleaseAsc = (a: ProductionItem, b: ProductionItem) =>
           (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '');
-        // Now Showing: earliest release first (consistent with Upcoming).
+        // Now Showing: already released AND not yet ended. A run with an endDate
+        // before today has finished and must not appear as "Now Showing".
         this.nowShowing.set(
           items
-            .filter((p) => !p.releaseDate || p.releaseDate <= today)
+            .filter(
+              (p) =>
+                (!p.releaseDate || p.releaseDate <= today) &&
+                (!p.endDate || p.endDate >= today),
+            )
             .sort(byReleaseAsc)
             .slice(0, 4)
             .map((p) => this.toCard(p, false)),

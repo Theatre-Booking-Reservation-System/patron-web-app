@@ -24,6 +24,8 @@ interface Production {
   image: string;
   /** ISO release date, used to split now-showing vs upcoming. */
   releaseDate?: string;
+  /** ISO end date, used to exclude finished runs from now-showing. */
+  endDate?: string;
   /** Raw backend genre string, used for category matching + text search. */
   genre?: string;
 }
@@ -65,12 +67,18 @@ export class ProductionsComponent implements OnInit {
     const today = new Date().toISOString().split('T')[0];
     let list = this.all();
 
-    // Show filter (from ?upcoming=): now-showing vs upcoming by release date.
+    // Show filter (from ?upcoming=): now-showing vs upcoming by run dates.
     const show = this.showFilter();
     if (show === 'upcoming') {
+      // Not released yet.
       list = list.filter((p) => p.releaseDate && p.releaseDate > today);
     } else if (show === 'now') {
-      list = list.filter((p) => !p.releaseDate || p.releaseDate <= today);
+      // Released AND not yet ended. A run whose endDate has passed is finished
+      // and must not be listed as now-showing.
+      list = list.filter(
+        (p) =>
+          (!p.releaseDate || p.releaseDate <= today) && (!p.endDate || p.endDate >= today),
+      );
     }
 
     // Category filter (from the home search category), matched on genre.
@@ -143,6 +151,7 @@ export class ProductionsComponent implements OnInit {
       basePrice: p.baseTicketCost ?? 0,
       image: p.posterImageUrl || 'assets/curtain.png',
       releaseDate: p.releaseDate,
+      endDate: p.endDate,
       genre: p.genre,
     };
   }

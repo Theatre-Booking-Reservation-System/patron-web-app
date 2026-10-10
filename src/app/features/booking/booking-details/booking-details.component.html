@@ -18,15 +18,36 @@
 
           <div class="field">
             <label for="fn">{{ 'bd.fullName' | translate }}</label>
-            <input id="fn" name="fn" type="text" [(ngModel)]="fullName" required />
+            <input
+              id="fn" name="fn" type="text"
+              #fn="ngModel"
+              [ngModel]="fullName()" (ngModelChange)="fullName.set($event)"
+            />
+            @if ((fn.touched || submitted()) && !nameValid()) {
+              <p class="field-error">{{ 'bd.err.name' | translate }}</p>
+            }
           </div>
           <div class="field">
             <label for="em">{{ 'bd.email' | translate }}</label>
-            <input id="em" name="em" type="email" [(ngModel)]="email" required />
+            <input
+              id="em" name="em" type="email"
+              #em="ngModel"
+              [ngModel]="email()" (ngModelChange)="email.set($event)"
+            />
+            @if ((em.touched || submitted()) && !emailValid()) {
+              <p class="field-error">{{ 'bd.err.email' | translate }}</p>
+            }
           </div>
           <div class="field">
             <label for="ph">{{ 'bd.phone' | translate }}</label>
-            <input id="ph" name="ph" type="tel" [(ngModel)]="phone" required />
+            <input
+              id="ph" name="ph" type="tel"
+              #ph="ngModel"
+              [ngModel]="phone()" (ngModelChange)="phone.set($event)"
+            />
+            @if ((ph.touched || submitted()) && !phoneValid()) {
+              <p class="field-error">{{ 'bd.err.phone' | translate }}</p>
+            }
           </div>
         </section>
 
@@ -49,8 +70,15 @@
           @if (requiresId) {
             <div class="field field--flag">
               <label for="idn">{{ 'bd.idNumber' | translate }}</label>
-              <input id="idn" name="idn" type="text" [(ngModel)]="idNumber" required />
+              <input
+                id="idn" name="idn" type="text"
+                #idn="ngModel"
+                [ngModel]="idNumber()" (ngModelChange)="idNumber.set($event)"
+              />
               <p class="field__hint"><mat-icon>info</mat-icon> {{ 'bd.idHint' | translate }}</p>
+              @if ((idn.touched || submitted()) && !idValid()) {
+                <p class="field-error">{{ 'bd.err.id' | translate }}</p>
+              }
             </div>
           }
         </section>
@@ -59,7 +87,7 @@
           <a class="btn btn--ghost" [routerLink]="['/book', p.id, 'seats']">
             <mat-icon>arrow_back</mat-icon> {{ 'book.back' | translate }}
           </a>
-          <button type="submit" class="btn btn--solid">
+          <button type="submit" class="btn btn--solid" [disabled]="!formValid()">
             {{ 'bd.proceedPayment' | translate }} <mat-icon>arrow_forward</mat-icon>
           </button>
         </div>
