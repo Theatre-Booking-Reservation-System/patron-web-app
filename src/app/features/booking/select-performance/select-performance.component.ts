@@ -18,6 +18,7 @@ interface DayCell {
   iso: string;
   hasShows: boolean;
   poya: boolean;
+  past: boolean;
 }
 
 @Component({
@@ -44,6 +45,9 @@ export class SelectPerformanceComponent {
   ];
 
   readonly weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  /** Today's date as a yyyy-MM-dd string (local time). Used to block past dates. */
+  private readonly todayIso = this.toIso(new Date());
 
   // Performances loaded from the catalogue service.
   private readonly allPerfs = signal<Performance[]>([]);
@@ -80,11 +84,13 @@ export class SelectPerformanceComponent {
           .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.time.localeCompare(b.time)));
         this.allPerfs.set(perfs);
 
-        // Jump the calendar to the first month that actually has a show.
-        if (perfs.length) {
-          const first = new Date(perfs[0].date);
-          this.viewYear.set(first.getFullYear());
-          this.viewMonth0.set(first.getMonth());
+        // Jump the calendar to the first month that has an UPCOMING show, but
+        // never earlier than the current month (past months aren't bookable).
+        const firstUpcoming = perfs.find((p) => p.date >= this.todayIso);
+        if (firstUpcoming) {
+          const d = new Date(firstUpcoming.date);
+          this.viewYear.set(d.getFullYear());
+          this.viewMonth0.set(d.getMonth());
         }
         this.loading.set(false);
       },
@@ -112,6 +118,11 @@ export class SelectPerformanceComponent {
     };
   }
 
+  /** yyyy-MM-dd in local time (matches the ISO date strings used by performances). */
+  private toIso(d: Date): string {
+    return `${d.getFullYear()}-${`${d.getMonth() + 1}`.padStart(2, '0')}-${`${d.getDate()}`.padStart(2, '0')}`;
+  }
+
   /** "7:00 PM" from an HH:mm(:ss) time, falling back to a session default. */
   private clockLabel(time: string | undefined, isMatinee: boolean): string {
     if (time) {
@@ -137,18 +148,23 @@ export class SelectPerformanceComponent {
 
     const cells: DayCell[] = [];
     for (let i = 0; i < startOffset; i++) {
-      cells.push({ day: 0, iso: `pad-${i}`, hasShows: false, poya: false });
+      cells.push({ day: 0, iso: `pad-${i}`, hasShows: false, poya: false, past: false });
     }
     for (let d = 1; d <= daysInMonth; d++) {
       const iso = `${year}-${`${month0 + 1}`.padStart(2, '0')}-${`${d}`.padStart(2, '0')}`;
-      cells.push({ day: d, iso, hasShows: showDates.has(iso), poya: isPoya(iso) });
+      const past = iso < this.todayIso;
+      // A past day is never bookable, even if the data lists a show on it.
+      cells.push({ day: d, iso, hasShows: showDates.has(iso) && !past, poya: isPoya(iso), past });
     }
     return cells;
   });
 
   readonly showsForSelected = computed<Performance[]>(() => {
     const date = this.selectedDate();
-    return date ? this.allPerfs().filter((p) => p.date === date) : [];
+    // Only show performances on the selected date that are today or later.
+    return date && date >= this.todayIso
+      ? this.allPerfs().filter((p) => p.date === date)
+      : [];
   });
 
   prevMonth(): void {
@@ -172,21 +188,22 @@ export class SelectPerformanceComponent {
   }
 
   selectDate(cell: DayCell): void {
-    if (!cell.hasShows) return;
+    // No shows, or a past date — not selectable.
+    if (!cell.hasShows || cell.past) return;
     this.selectedDate.set(cell.iso);
     this.selectedPerf.set(null);
   }
 
   selectPerf(p: Performance): void {
-    // Fully-booked shows can't be selected for booking.
-    if (p.availability === 'fullyBooked') return;
+    // Fully-booked or past shows can't be selected for booking.
+    if (p.availability === 'fullyBooked' || p.date < this.todayIso) return;
     this.selectedPerf.set(p);
   }
 
-  /** Continue is allowed only when a non-fully-booked show is selected. */
+  /** Continue is allowed only when a non-fully-booked, non-past show is selected. */
   readonly canContinue = computed(() => {
     const p = this.selectedPerf();
-    return !!p && p.availability !== 'fullyBooked';
+    return !!p && p.availability !== 'fullyBooked' && p.date >= this.todayIso;
   });
 
   readonly enrolling = signal(false);

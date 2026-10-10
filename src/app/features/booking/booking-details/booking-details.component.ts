@@ -27,11 +27,28 @@ export class BookingDetailsComponent {
   private readonly loyalty = inject(LoyaltyService);
   readonly booking = inject(BookingStateService);
 
-  // Local form model, pre-filled from the signed-in user where possible.
-  fullName = this.booking.draft().fullName || this.auth.user()?.name || '';
-  email = this.booking.draft().email || this.auth.user()?.email || '';
-  phone = this.booking.draft().phone || '';
-  idNumber = this.booking.draft().idNumber || '';
+  // Local form model (signals), pre-filled from the signed-in user where possible.
+  readonly fullName = signal(this.booking.draft().fullName || this.auth.user()?.name || '');
+  readonly email = signal(this.booking.draft().email || this.auth.user()?.email || '');
+  readonly phone = signal(this.booking.draft().phone || '');
+  readonly idNumber = signal(this.booking.draft().idNumber || '');
+
+  readonly submitted = signal(false);
+
+  // Validation patterns (mirrors the register form).
+  private readonly emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  private readonly phonePattern = /^(?:\+94|0)\d{9}$/;
+
+  // Per-field validity.
+  readonly nameValid = computed(() => this.fullName().trim().length >= 2);
+  readonly emailValid = computed(() => this.emailPattern.test(this.email().trim()));
+  readonly phoneValid = computed(() => this.phonePattern.test(this.phone().trim()));
+  readonly idValid = computed(() => !this.requiresId || this.idNumber().trim().length > 0);
+
+  /** Proceed is allowed only when every required field is valid. */
+  readonly formValid = computed(
+    () => this.nameValid() && this.emailValid() && this.phoneValid() && this.idValid(),
+  );
 
   // Ticket type is auto-selected (never user-editable).
   readonly concession = signal<ConcessionType>(this.booking.draft().concession);
@@ -51,8 +68,8 @@ export class BookingDetailsComponent {
       this.auth.getPatron(patronId).subscribe({
         next: (res) => {
           const p = res.patron;
-          if (p?.contactNo && !this.phone) {
-            this.phone = p.contactNo;
+          if (p?.contactNo && !this.phone()) {
+            this.phone.set(p.contactNo);
           }
           this.autoSelectConcession(p?.dateOfBirth, p?.loyaltyHolder);
         },
@@ -105,14 +122,16 @@ export class BookingDetailsComponent {
 
   onSubmit(event: Event): void {
     event.preventDefault();
+    this.submitted.set(true);
     const prod = this.booking.draft().production;
-    if (!prod) return;
+    // Guard: the button is disabled while invalid, but double-check here too.
+    if (!prod || !this.formValid()) return;
 
     this.booking.patchDetails({
-      fullName: this.fullName.trim(),
-      email: this.email.trim(),
-      phone: this.phone.trim(),
-      idNumber: this.idNumber.trim(),
+      fullName: this.fullName().trim(),
+      email: this.email().trim(),
+      phone: this.phone().trim(),
+      idNumber: this.idNumber().trim(),
     });
     this.router.navigate(['/book', prod.id, 'payment']);
   }
