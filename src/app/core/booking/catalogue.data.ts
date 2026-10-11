@@ -36,7 +36,7 @@ export const PRODUCTIONS: Production[] = [
     reviews: 210,
     synopsis:
       'A sweeping historical epic following a kingdom at a crossroads, where duty and conscience collide on the path of righteousness.',
-    image: 'assets/curtain.png',
+    image: 'assets/curtain.jpg',
   },
   {
     id: 'yathra-gruwa',
@@ -52,7 +52,7 @@ export const PRODUCTIONS: Production[] = [
     reviews: 178,
     synopsis:
       'A riotous comedy of errors aboard an ill-fated journey, where every misunderstanding leads to laughter and every stranger becomes family.',
-    image: 'assets/loginBg.png',
+    image: 'assets/loginBg.jpg',
   },
   {
     id: 'ahsa-maliga',
@@ -84,7 +84,7 @@ export const PRODUCTIONS: Production[] = [
     reviews: 96,
     synopsis:
       'A tender drama about freedom and belonging, told through the bond between a caged bird and the girl who longs to set it free.',
-    image: 'assets/curtain.png',
+    image: 'assets/curtain.jpg',
   },
   {
     id: 'the-last-curtain',
@@ -100,7 +100,7 @@ export const PRODUCTIONS: Production[] = [
     reviews: 152,
     synopsis:
       'A gripping backstage drama about an ageing star facing her final performance, and the secrets that surface before the last curtain falls.',
-    image: 'assets/loginBg.png',
+    image: 'assets/loginBg.jpg',
     earlyAccess: true,
   },
   {
@@ -117,7 +117,7 @@ export const PRODUCTIONS: Production[] = [
     reviews: 88,
     synopsis:
       'A vibrant cultural celebration of nine nights of dance and devotion, brought to life with colour, rhythm and tradition.',
-    image: 'assets/curtain.png',
+    image: 'assets/curtain.jpg',
     earlyAccess: true,
   },
   {
@@ -151,7 +151,7 @@ export const PRODUCTIONS: Production[] = [
     reviews: 47,
     synopsis:
       'An epic tale of a king and his warrior, of loyalty and sacrifice, played out against the sweep of history.',
-    image: 'assets/loginBg.png',
+    image: 'assets/loginBg.jpg',
     earlyAccess: true,
   },
 ];

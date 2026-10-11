@@ -9,6 +9,7 @@
         [class.hero__slide--active]="current() === i"
         [style.backgroundImage]="'url(' + s.image + ')'"
         [attr.aria-hidden]="current() !== i"
+        [attr.inert]="current() !== i ? '' : null"
       >
         <div class="hero__overlay">
           <div class="hero__content">
@@ -47,8 +48,14 @@
   <section class="search-wrap">
     <form class="search" (submit)="onSearch($event)">
       <div class="search__field">
-        <mat-icon>search</mat-icon>
-        <input type="text" [placeholder]="'home.searchPh' | translate" [(ngModel)]="query" name="q" />
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <input
+          type="text"
+          [placeholder]="'home.searchPh' | translate"
+          [attr.aria-label]="'home.searchPh' | translate"
+          [(ngModel)]="query"
+          name="q"
+        />
       </div>
 
       <div class="search__filters">
