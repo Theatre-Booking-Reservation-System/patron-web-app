@@ -125,7 +125,7 @@ export class MyBookingsComponent {
     const seats = (b.seats ?? []).map((s) => s.seatRef).filter(Boolean).join(', ');
     const pid = perf?.productionId;
     const name = pid ? this.productionNameById.get(pid) : '';
-    const image = (pid && this.productionImageById.get(pid)) || 'assets/curtain.png';
+    const image = (pid && this.productionImageById.get(pid)) || 'assets/curtain.jpg';
     return {
       id: b.bookingId,
       bookingId: b.bookingRef || b.bookingId,

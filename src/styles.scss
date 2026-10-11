@@ -104,6 +104,52 @@ a {
   text-decoration: none;
 }
 
+/* ── Keyboard focus ───────────────────────────────────────────────────────
+   A visible focus indicator for every interactive control reached by keyboard.
+   Uses :focus-visible so it shows for keyboard/AT users without adding a ring
+   on mouse clicks. Components may layer their own ring; this is the baseline. */
+:focus-visible {
+  outline: 3px solid var(--brand-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Remove the ring only when a custom focus style is already provided and the
+   default outline would be redundant (inputs use a box-shadow ring). */
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+}
+
+/* ── Skip link ────────────────────────────────────────────────────────────
+   First focusable element; lets keyboard users jump past the header nav
+   straight to the page's main content. Visible only when focused. */
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -3rem;
+  z-index: 1000;
+  padding: 0.5rem 0.9rem;
+  background: var(--brand-maroon);
+  color: #fff;
+  border-radius: 0 0 8px 8px;
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ── Reusable helpers ────────────────────────────────────────────────────── */
 .page-title {
   font-size: 1.5rem;

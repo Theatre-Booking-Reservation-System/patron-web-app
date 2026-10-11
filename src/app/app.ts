@@ -8,6 +8,10 @@ import { ConnectionService } from './core/services/connection.service';
   selector: 'app-root',
   imports: [RouterOutlet, ErrorModalComponent, ConfirmModalComponent],
   template: `
+    <!-- Skip link: first focusable element, jumps keyboard users past the
+         header nav to the current page's main content. -->
+    <a class="skip-link" href="#" (click)="skipToMain($event)">Skip to main content</a>
+
     <router-outlet />
     <app-error-modal />
     <app-confirm-modal />
@@ -19,5 +23,16 @@ export class App {
   constructor() {
     // Watch for browser online/offline events across the whole app.
     this.connection.init();
+  }
+
+  /** Move focus (and the viewport) to the active page's <main> region. */
+  skipToMain(event: Event): void {
+    event.preventDefault();
+    const main = document.querySelector('main');
+    if (!main) return;
+    // Make it programmatically focusable, then focus for screen-reader context.
+    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+    (main as HTMLElement).focus();
+    main.scrollIntoView();
   }
 }

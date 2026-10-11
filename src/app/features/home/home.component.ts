@@ -113,7 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const seats = (b.seats ?? []).map((s) => s.seatRef).filter(Boolean).join(', ');
     const pid = perf?.productionId;
     const name = pid ? this.productionNameById.get(pid) : '';
-    const image = (pid && this.productionImageById.get(pid)) || 'assets/curtain.png';
+    const image = (pid && this.productionImageById.get(pid)) || 'assets/curtain.jpg';
     return {
       bookingId: b.bookingRef || b.bookingId,
       production: name || 'Booking',
@@ -147,9 +147,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Hero carousel slides — images live in /public/assets.
   readonly slides: HeroSlide[] = [
-    { image: 'assets/slide1.png', titleKey: 'hero.title', subtitleKey: 'hero.subtitle' },
-    { image: 'assets/slide2.png', titleKey: 'hero.title2', subtitleKey: 'hero.subtitle2' },
-    { image: 'assets/slide3.png', titleKey: 'hero.title3', subtitleKey: 'hero.subtitle3' },
+    { image: 'assets/slide1.jpg', titleKey: 'hero.title', subtitleKey: 'hero.subtitle' },
+    { image: 'assets/slide2.jpg', titleKey: 'hero.title2', subtitleKey: 'hero.subtitle2' },
+    { image: 'assets/slide3.jpg', titleKey: 'hero.title3', subtitleKey: 'hero.subtitle3' },
   ];
 
   readonly current = signal(0);
@@ -324,7 +324,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       genreKey: this.genreKey(p.genre),
       dateRange: this.dateRange(p.releaseDate, p.endDate),
       venue: 'Main Theatre, Sapumal Theatre',
-      image: p.posterImageUrl || 'assets/curtain.png',
+      image: p.posterImageUrl || 'assets/curtain.jpg',
       earlyAccess: earlyAccess || undefined,
     };
   }

@@ -149,7 +149,7 @@ export class ProductionsComponent implements OnInit {
       language: this.langFrom(p.language),
       dateRange: this.dateRange(p.releaseDate, p.endDate),
       basePrice: p.baseTicketCost ?? 0,
-      image: p.posterImageUrl || 'assets/curtain.png',
+      image: p.posterImageUrl || 'assets/curtain.jpg',
       releaseDate: p.releaseDate,
       endDate: p.endDate,
       genre: p.genre,

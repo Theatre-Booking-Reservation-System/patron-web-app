@@ -12,8 +12,11 @@ import {
   PatronRegisterResponse,
 } from '../models/auth.models';
 
-const TOKEN_KEY = 'sapumal-patron-token';
-const USER_KEY = 'sapumal-patron-user';
+// localStorage key names (not secrets — just where the session is cached).
+const STORAGE = {
+  token: 'sapumal-patron-token',
+  user: 'sapumal-patron-user',
+} as const;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -57,8 +60,8 @@ export class AuthService {
   logout(): void {
     this.user.set(null);
     try {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(STORAGE.token);
+      localStorage.removeItem(STORAGE.user);
     } catch {
       /* storage unavailable */
     }
@@ -67,7 +70,7 @@ export class AuthService {
   /** The raw JWT for the Authorization header. */
   get token(): string | null {
     try {
-      return localStorage.getItem(TOKEN_KEY);
+      return localStorage.getItem(STORAGE.token);
     } catch {
       return null;
     }
@@ -82,8 +85,8 @@ export class AuthService {
     };
     this.user.set(user);
     try {
-      localStorage.setItem(TOKEN_KEY, res.accessToken);
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      localStorage.setItem(STORAGE.token, res.accessToken);
+      localStorage.setItem(STORAGE.user, JSON.stringify(user));
     } catch {
       /* storage unavailable */
     }
@@ -91,7 +94,7 @@ export class AuthService {
 
   private readUser(): AuthUser | null {
     try {
-      const raw = localStorage.getItem(USER_KEY);
+      const raw = localStorage.getItem(STORAGE.user);
       return raw ? (JSON.parse(raw) as AuthUser) : null;
     } catch {
       return null;

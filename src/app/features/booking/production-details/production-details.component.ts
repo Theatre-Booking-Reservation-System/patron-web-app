@@ -140,7 +140,7 @@ export class ProductionDetailsComponent {
       rating: 0,
       reviews: 0,
       synopsis: p.description || '',
-      image: p.posterImageUrl || 'assets/curtain.png',
+      image: p.posterImageUrl || 'assets/curtain.jpg',
       earlyAccess: !!p.releaseDate && p.releaseDate > today,
       releaseDate: p.releaseDate,
     };
